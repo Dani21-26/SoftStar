@@ -9,6 +9,7 @@ use App\Livewire\Productos\Edit;
 use App\Livewire\Productos\Show;
 use App\Livewire\Proveedores\{Index as ProveedoresIndex, Create as ProveedoresCreate, Edit as ProveedoresEdit, Show as ProveedoresShow};
 use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edit as EmpleadoEdit, Show as EmpleadoShow};
+use App\Livewire\GestionServicios;
 // Ruta pública
 Route::get('/', function () {
     return view('welcome');
@@ -40,7 +41,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/crear', EmpleadoCreate::class)->name('empleado.create');
     Route::get('/{empleado}/editar', EmpleadoEdit::class)->name('empleado.edit');
     Route::get('/{empleado}', EmpleadoShow::class)->name('empleado.show'); 
-});
+}); 
+    //ruta de sevicios Tecnicos
+    
+    
 
     // Configuraciones (manteniendo tu estructura actual)
     Route::redirect('settings', 'settings/profile');

@@ -17,6 +17,10 @@
                 </flux:navlist.group>
             </flux:navlist>
 
+            <flux:navlist.item icon="eye" href="{{ route('servicios.gestion') }}">
+                {{ __('Servicios Tecnicos') }}
+            </flux:navlist.item>
+
             <flux:spacer />
 
             

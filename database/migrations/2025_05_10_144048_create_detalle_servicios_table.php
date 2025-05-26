@@ -8,23 +8,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalle_servicios', function (Blueprint $table) {
-            $table->id();
-            $table->string('codigo_servicio');
-            $table->string('cliente', 100);
-            $table->unsignedBigInteger('tecnico_id');
-            $table->unsignedBigInteger('producto_id')->nullable();
-            $table->text('nota_servicio');
-            $table->timestamp('fecha_inicio');
-            $table->timestamp('fecha_confirmacion')->useCurrent();
+            $table->id('id_detalle');
+            $table->unsignedBigInteger('id_servicio');
+            $table->unsignedBigInteger('id_empleado');
+            $table->unsignedBigInteger('id_producto'); 
+            $table->integer('cantidad')->default(1); 
+            $table->text('productos_adicionales')->nullable(); 
+            $table->text('diagnostico_real');
+            $table->text('solucion_aplicada');
+            $table->enum('estado', ['completado', 'cancelado', 'pendiente'])->default('pendiente');
             $table->timestamps();
-
-            // Claves foráneas
-            $table->foreign('tecnico_id')->references('id_empleado')->on('empleados');
-            $table->foreign('producto_id')->references('id')->on('productos');
-
-            // Índices
-            $table->index('codigo_servicio');
-            $table->index('tecnico_id');
+            
+            $table->foreign('id_servicio')->references('id_servicio')->on('servicio_tecnicos')->onDelete('cascade');
+            $table->foreign('id_empleado')->references('id_empleado')->on('empleados');
+            $table->foreign('id_producto')->references('id')->on('productos')->onDelete('restrict');
         });
     }
 

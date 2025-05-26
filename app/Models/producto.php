@@ -23,7 +23,7 @@ class Producto extends Model
         'estado'
     ];
 
-    // Añade esto para asegurar el formato numérico
+
     protected $casts = [
         'precio' => 'decimal:2',
         'stock' => 'integer',
@@ -40,7 +40,11 @@ class Producto extends Model
     {
         return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
     }
-
+     // Modelo Producto.php
+    public function servicios() {
+    return $this->belongsToMany(ServicioTecnico::class, 'servicio_productos')
+                ->withPivot('cantidad_usada');
+    }
 
     /**
      * Scope para productos con stock bajo

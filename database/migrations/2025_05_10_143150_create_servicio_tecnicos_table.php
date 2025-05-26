@@ -9,21 +9,12 @@ return new class extends Migration
     {
         Schema::create('servicio_tecnicos', function (Blueprint $table) {
             $table->id('id_servicio');
-            $table->string('codigo')->unique()->comment('Formato: ST-0001');
-            $table->string('cliente', 100);
-            $table->unsignedBigInteger('id_empleado');
-            $table->foreign('id_empleado')->references('id_empleado')->on('empleados');
-            $table->unsignedBigInteger('id_producto')->nullable();
-            $table->foreign('id_producto')->references('id')->on('productos');
-            
+            $table->string('codigo')->unique();
+            $table->string('cliente');
+            $table->text('direccion');
             $table->text('falla_reportada');
-            $table->enum('estado', ['pendiente', 'en_proceso'])->default('pendiente');
+            $table->enum('estado', ['por_tomar', 'confirmado', 'cancelado'])->default('por_tomar');
             $table->timestamps();
-            
-            
-            $table->index('codigo');
-            $table->index('cliente');
-            $table->index('estado');
         });
     }
 

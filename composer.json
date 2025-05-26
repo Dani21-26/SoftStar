@@ -16,6 +16,7 @@
         "livewire/flux": "^2.0",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7.0",
+        "spatie/laravel-permission": "^6.18",
         "yajra/laravel-datatables-oracle": "*"
     },
     "require-dev": {

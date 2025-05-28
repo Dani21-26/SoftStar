@@ -14,14 +14,14 @@ use App\Livewire\Servicios\GestionServicios;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-
+Auth::routes(['register' => false]);
 // Grupo de rutas que requieren autenticación
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
     Route::view('dashboard', 'dashboard')->name('dashboard'); 
 
     // Rutas para Productos (CRUD completo)
-    Route::middleware(['role:Super-Admin'])->group(function () {
+    Route::middleware(['auth', 'verified', 'role:Super-Admin'])->group(function () {
     Route::prefix('productos')->group(function () {
     Route::get('/', Index::class)->name('productos.index');
     Route::get('/crear', Create::class)->name('productos.create');
@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }); 
     });
     //ruta de sevicios tecnicos
-    Route::middleware(['role:Super-Admin,tecnico,servicio-cliente'])->group(function () {
+    Route::middleware(['auth', 'verified', 'role:Super-Admin|tecnico|servicio-cliente'])->group(function () {
     Route::prefix('servicios')->group(function () {
     Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
         }); 

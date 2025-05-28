@@ -75,7 +75,7 @@ class UserSeeder extends Seeder
 
         // Rol Servicio-Cliente
         $roleServicio = Role::firstOrCreate(['name' => 'servicio-cliente', 'guard_name' => 'web']);
-        $roleServicio->syncPermissions([
+        $roleServicio->syncPermiaassions([
             'ver producto',
             'ver servicioTecnico',
             'crear servicioTecnico',

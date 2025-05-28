@@ -83,5 +83,13 @@ class GestionServicios extends Component
     {
         return redirect()->route('servicios.detalle', $idServicio);
     }
+    public function mount()
+    {
+        $this->authorize('ver servicioTecnico');
+        $this->authorize('tomar servicioTecnico');
+
+            
+    }
+    
 }
 

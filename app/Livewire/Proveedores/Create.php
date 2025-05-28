@@ -81,7 +81,11 @@ class Create extends Component
             }
         }
     }
-
+    public function mount()
+    {
+        $this->authorize('crear proveedor');
+    }
+    
     public function render()
     {
         return view('livewire.proveedores.create');

@@ -67,6 +67,11 @@ class Edit extends Component
         
         session()->flash('success', 'Producto actualizado correctamente');
     }
+    public function mount()
+    {
+        $this->authorize('editar producto');
+    }
+    
 
     public function render()
     {

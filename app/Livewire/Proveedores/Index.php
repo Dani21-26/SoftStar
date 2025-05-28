@@ -66,6 +66,10 @@ class Index extends Component
     {
         $this->dispatch('abrir-modal-edicion', id: $id_proveedor)->to(Edit::class);
     }
+    public function mount()
+    {
+        $this->authorize('ver proveedor');
+    }
 
     public function render()
     {

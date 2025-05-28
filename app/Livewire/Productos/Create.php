@@ -73,7 +73,11 @@ public function save()
     }
 }
 
-    
+public function mount()
+{
+    $this->authorize('crear producto');
+}
+
 
     public function render()
     {

@@ -68,6 +68,11 @@ class Create extends Component
             }
         }
     }
+    public function mount()
+    {
+        $this->authorize('crear empleado');
+    }
+    
 
     public function render()
     {

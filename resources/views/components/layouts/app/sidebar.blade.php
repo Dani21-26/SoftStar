@@ -34,9 +34,11 @@
                 {{ __('Proveedores') }}
                 </flux:navlist.item>
                 
-                <flux:navlist.item icon="Users" href="{{ route('empleado.index') }}" >
-                {{ __('Personal') }}
+                @can('ver empleado')
+                <flux:navlist.item icon="users" href="{{ route('empleado.index') }}">
+                    {{ __('Personal') }}
                 </flux:navlist.item>
+                @endcan
                 
                 <flux:navlist.item icon="folder-arrow-down" href="Algo debe ir aqui" target="_blank">
                 {{ __('Reporte') }}

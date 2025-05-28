@@ -21,12 +21,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard'); 
 
     // Rutas para Productos (CRUD completo)
+    Route::middleware(['role:Super-Admin'])->group(function () {
     Route::prefix('productos')->group(function () {
     Route::get('/', Index::class)->name('productos.index');
     Route::get('/crear', Create::class)->name('productos.create');
     Route::get('/{producto}/editar', Edit::class)->name('productos.edit');
     Route::get('/{producto}', Show::class)->name('productos.show'); 
-});
+    });
     
     Route::prefix('proveedores')->group(function () {
     Route::get('/', ProveedoresIndex::class)->name('proveedores.index');
@@ -41,12 +42,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/crear', EmpleadoCreate::class)->name('empleado.create');
     Route::get('/{empleado}/editar', EmpleadoEdit::class)->name('empleado.edit');
     Route::get('/{empleado}', EmpleadoShow::class)->name('empleado.show'); 
-}); 
+        }); 
+    });
     //ruta de sevicios tecnicos
+    Route::middleware(['role:Super-Admin,tecnico,servicio-cliente'])->group(function () {
     Route::prefix('servicios')->group(function () {
-        Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
-    }); 
-
+    Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
+        }); 
+    });
     // Configuraciones (manteniendo tu estructura actual)
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');

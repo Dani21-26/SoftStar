@@ -65,7 +65,10 @@ class Edit extends Component
         
         session()->flash('success', 'Proveedor actualizado correctamente');
     }
-
+    public function mount()
+    {
+        $this->authorize('editar proveedor');
+    }
     public function render()
     {
         return view('livewire.proveedores.edit');

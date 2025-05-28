@@ -99,6 +99,11 @@ class Edit extends Component
         $this->showModal = false;
     }
 
+    public function mount()
+    {
+        $this->authorize('editar empleado');
+    }
+    
     public function render()
     {
         return view('livewire.empleado.edit', [

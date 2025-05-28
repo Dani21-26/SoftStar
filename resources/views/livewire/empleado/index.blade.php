@@ -6,12 +6,18 @@
                 <flux:heading size="xl" level="1">{{ __('Lista de Empleados') }}</flux:heading>
                 <flux:separator variant="subtle" />
             </div>
+            @can('crear empleado')
             <flux:modal.trigger name="crear-empleado">
                 <flux:button>Añadir Empleado</flux:button>
             </flux:modal.trigger>
+            @endcan
         </div>
+        @can('crear empleado')
         <livewire:empleado.create />
+        @endcan
+        @can('editar empleado')
         <livewire:empleado.edit />
+        @endcan
     </div>
 
     <!-- Panel de búsqueda y filtros -->
@@ -42,7 +48,7 @@
                         </select>
                     </div>
 
-                    <!-- Filtro por estado - Versión mejorada -->
+                    <!-- Filtro por estado -->
                     <div class="flex items-center gap-2">
                         <span class="text-sm dark:text-gray-300">Estado:</span>
                         <select wire:model.live="estado" wire:change="$dispatch('filtro-cambiado')"
@@ -56,6 +62,7 @@
             </div>
         </div>
 
+        @can('ver empleado')
         <!-- Tabla de empleados -->
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -79,7 +86,9 @@
                         <th class="px-4 py-3 whitespace-nowrap cursor-pointer" wire:click="sortBy('estado')">
                             Estado {!! $sortField === 'estado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
                         </th>
+                        @canany(['editar empleado', 'cambiar estado empleado'])
                         <th class="px-4 py-3 whitespace-nowrap">Acciones</th>
+                        @endcanany
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -119,26 +128,32 @@
                                     {{ ucfirst($empleado->estado) }}
                                 </span>
                             </td>
+                            @canany(['editar empleado', 'cambiar estado empleado'])
                             <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end space-x-2">
+                                    @can('editar empleado')
                                     <button wire:click="edit({{ $empleado->id_empleado }})"
                                         class="text-blue-600 hover:text-blue-900 dark:text-blue-400 hover:underline">
                                         Editar
                                     </button>
+                                    @endcan
+                                    
+                                    @can('cambiar estado empleado')
                                     <button wire:click="toggleStatus({{ $empleado->id_empleado }})"
                                         wire:confirm="¿Estás seguro de cambiar el estado de este empleado?"
                                         wire:loading.attr="disabled"
                                         class="{{ $empleado->estado == 'activo' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900' }} hover:underline">
-                                        <span wire:loading.remove
-                                            wire:target="toggleStatus({{ $empleado->id_empleado }})">
+                                        <span wire:loading.remove wire:target="toggleStatus({{ $empleado->id_empleado }})">
                                             {{ $empleado->estado == 'activo' ? 'Desactivar' : 'Activar' }}
                                         </span>
                                         <span wire:loading wire:target="toggleStatus({{ $empleado->id_empleado }})">
                                             <i class="fas fa-spinner fa-spin"></i>
                                         </span>
                                     </button>
+                                    @endcan
                                 </div>
                             </td>
+                            @endcanany
                         </tr>
                     @empty
                         <tr>
@@ -157,5 +172,6 @@
                 {{ $empleados->links() }}
             </div>
         @endif
+        @endcan
     </div>
 </div>

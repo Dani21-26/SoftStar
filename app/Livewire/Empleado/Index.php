@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Empleado;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Index extends Component
 {
@@ -36,13 +37,21 @@ class Index extends Component
     ];
 
     public function mount()
-    {
+    {   
+        try {
+        $this->authorize('ver empleado');
         $this->ubicacionesUnicas = Empleado::select('ubicacion')
             ->distinct()
             ->whereNotNull('ubicacion')
             ->orderBy('ubicacion')
             ->pluck('ubicacion')
             ->toArray();
+
+                      
+    } catch (AuthorizationException $e) {
+        abort(403, 'No tienes permiso para ver esta información');
+    }
+            
     }
 
     public function aplicarFiltros()
@@ -106,10 +115,11 @@ class Index extends Component
 
 
     public function edit($id_empleado)
-{
+    {
     $this->dispatch('abrirModalEdicion', id: $id_empleado)->to(Edit::class);
-}
-
+    }
+    
+   
     public function render()
     {
         $empleados = Empleado::query()

@@ -65,7 +65,11 @@ class Index extends Component
     {
         $this->dispatch('abrir-modal-edicion', id: $id)->to(Edit::class);
     }
-
+    public function mount()
+    {
+        $this->authorize('ver producto');
+    }
+    
     public function render()
     {
         return view('livewire.productos.index', [

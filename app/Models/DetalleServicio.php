@@ -3,33 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetalleServicio extends Model
 {
     protected $table = 'detalle_servicios';
-    
     protected $fillable = [
-        'codigo_servicio',
-        'nombre_cliente',
-        'tecnico_id',
-        'producto_id',
-        'nota_servicio',
-        'fecha_inicio',
-        'fecha_confirmacion'
+        'id_servicio',
+        'user_id', 
+        'nota',
+        'productos_utilizados'
     ];
-
+    
     protected $casts = [
-        'fecha_inicio' => 'datetime',
-        'fecha_confirmacion' => 'datetime'
+        'productos_utilizados' => 'array'
     ];
-
-    public function tecnico()
+    
+    public function servicio(): BelongsTo
     {
-        return $this->belongsTo(Empleado::class, 'tecnico_id', 'id_empleado');
+        return $this->belongsTo(ServicioTecnico::class, 'id_servicio');
+
     }
 
-    public function producto()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Producto::class, 'producto_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+    
+    
 }

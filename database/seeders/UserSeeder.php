@@ -31,7 +31,13 @@ class UserSeeder extends Seeder
             'confirmar servicioTecnico', 'cancelar servicioTecnico',
             
             // Recordatorios
-            'ver recordatorios', 'crear recordatorios', 'editar recordatorios', 'eliminar recordatorios'
+            'ver recordatorios', 'crear recordatorios', 'editar recordatorios', 'eliminar recordatorios',
+            
+            // Nuevo permiso para crear usuarios
+            'crear user',
+            
+            // Permiso para gestión de productos en servicios
+            'gestionar productos servicio'  
         ];
 
         // Crear todos los permisos
@@ -54,7 +60,7 @@ class UserSeeder extends Seeder
         // Asignar rol al usuario admin
         $adminUser->assignRole($roleAdmin);
 
-        // (Opcional) Crear otros roles con permisos específicos
+
         $this->createOtherRoles();
     }
 
@@ -70,12 +76,14 @@ class UserSeeder extends Seeder
             'tomar servicioTecnico',
             'confirmar servicioTecnico',
             'cancelar servicioTecnico',
-            'ver recordatorios'
+            'ver recordatorios',
+            'ver producto', // Nuevo permiso para ver productos
+            'gestionar productos servicio'
         ]);
 
         // Rol Servicio-Cliente
         $roleServicio = Role::firstOrCreate(['name' => 'servicio-cliente', 'guard_name' => 'web']);
-        $roleServicio->syncPermiaassions([
+        $roleServicio->syncPermissions([
             'ver producto',
             'ver servicioTecnico',
             'crear servicioTecnico',

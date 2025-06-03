@@ -40,12 +40,10 @@ class Producto extends Model
     {
         return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
     }
-     // Modelo Producto.php
-    public function servicios() {
-    return $this->belongsToMany(ServicioTecnico::class, 'servicio_productos')
-                ->withPivot('cantidad_usada');
-    }
-
+    public function servicios()
+{
+    return $this->hasMany(ServicioProducto::class, 'id_producto');
+}
     /**
      * Scope para productos con stock bajo
      */
@@ -69,4 +67,5 @@ class Producto extends Model
     {
         return $this->stock <= 5; 
     }
+    
 }

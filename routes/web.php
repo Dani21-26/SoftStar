@@ -10,11 +10,13 @@ use App\Livewire\Productos\Show;
 use App\Livewire\Proveedores\{Index as ProveedoresIndex, Create as ProveedoresCreate, Edit as ProveedoresEdit, Show as ProveedoresShow};
 use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edit as EmpleadoEdit, Show as EmpleadoShow};
 use App\Livewire\Servicios\GestionServicios;
+use App\Livewire\Admin\UserCreateForm;
+use App\Livewire\Admin\UserRoleAssignment;
 // Ruta pública
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
-Auth::routes(['register' => false]);
+
 // Grupo de rutas que requieren autenticación
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
@@ -42,7 +44,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/crear', EmpleadoCreate::class)->name('empleado.create');
     Route::get('/{empleado}/editar', EmpleadoEdit::class)->name('empleado.edit');
     Route::get('/{empleado}', EmpleadoShow::class)->name('empleado.show'); 
+
+    Route::get('/users/create', UserCreateForm::class)->name('users.create');
+    Route::get('/users/{user}/roles', UserRoleAssignment::class)->name('users.roles');
         }); 
+        
     });
     //ruta de sevicios tecnicos
     Route::middleware(['auth', 'verified', 'role:Super-Admin|tecnico|servicio-cliente'])->group(function () {

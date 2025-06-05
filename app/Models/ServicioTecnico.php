@@ -62,7 +62,7 @@ class ServicioTecnico extends Model
      */
     public function tecnico(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_tecnico');
+        return $this->belongsTo(User::class, 'tecnico_id');
     }
 
     /**
@@ -84,4 +84,5 @@ class ServicioTecnico extends Model
               ->orWhere('direccion', 'like', '%'.$search.'%');
         });
     }
+    
 }

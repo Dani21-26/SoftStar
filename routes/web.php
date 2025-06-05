@@ -12,6 +12,9 @@ use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edi
 use App\Livewire\Servicios\GestionServicios;
 use App\Livewire\Admin\UserCreateForm;
 use App\Livewire\Admin\UserRoleAssignment;
+use App\Http\Controllers\DashboardController;
+
+
 // Ruta pública
 Route::get('/', function () {
     return view('welcome');
@@ -20,8 +23,7 @@ Route::get('/', function () {
 // Grupo de rutas que requieren autenticación
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
-    Route::view('dashboard', 'dashboard')->name('dashboard'); 
-
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
     // Rutas para Productos (CRUD completo)
     Route::middleware(['auth', 'verified', 'role:Super-Admin'])->group(function () {
     Route::prefix('productos')->group(function () {
@@ -47,9 +49,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/users/create', UserCreateForm::class)->name('users.create');
     Route::get('/users/{user}/roles', UserRoleAssignment::class)->name('users.roles');
-        }); 
+    }); 
+    
         
     });
+  
+    
     //ruta de sevicios tecnicos
     Route::middleware(['auth', 'verified', 'role:Super-Admin|tecnico|servicio-cliente'])->group(function () {
     Route::prefix('servicios')->group(function () {

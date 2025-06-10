@@ -10,6 +10,7 @@ use App\Livewire\Productos\Show;
 use App\Livewire\Proveedores\{Index as ProveedoresIndex, Create as ProveedoresCreate, Edit as ProveedoresEdit, Show as ProveedoresShow};
 use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edit as EmpleadoEdit, Show as EmpleadoShow};
 use App\Livewire\Servicios\GestionServicios;
+use App\Livewire\Servicios\HistorialServicios;
 use App\Livewire\Admin\UserCreateForm;
 use App\Livewire\Admin\UserRoleAssignment;
 use App\Http\Controllers\DashboardController;
@@ -53,12 +54,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
         
     });
-  
     
     //ruta de sevicios tecnicos
     Route::middleware(['auth', 'verified', 'role:Super-Admin|tecnico|servicio-cliente'])->group(function () {
-    Route::prefix('servicios')->group(function () {
-    Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
+        Route::prefix('servicios')->group(function () {
+            // Servicios actuales (Livewire)
+            Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
+            
+            // Historial de servicios completados (Livewire)
+            Route::get('/historial', HistorialServicios::class)->name('servicios.historial');
         }); 
     });
     // Configuraciones (manteniendo tu estructura actual)

@@ -16,7 +16,7 @@ return new class extends Migration
         $table->id(); // Esto crea un campo 'id' autoincremental
         $table->string('nombre');
         $table->text('detalle')->nullable();
-        $table->integer('stock')->default(0);
+        $table->string('stock')->default('0 unidades');
         $table->unsignedBigInteger('id_categoria');
         $table->string('ubicacion');
         $table->decimal('precio', 10, 2);

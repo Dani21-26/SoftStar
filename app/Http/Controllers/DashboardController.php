@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ServicioTecnico;
 use App\Models\DetalleServicio;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
+use App\Models\Producto;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -18,42 +17,48 @@ class DashboardController extends Controller
             now()->endOfWeek()
         ])->count();
 
-        // 2. Técnicos activos (usuarios que han confirmado servicios esta semana)
-        $tecnicosActivos = User::role('tecnico')
-            ->whereHas('detallesServicios', function($query) {
-                $query->whereBetween('created_at', [
-                    now()->startOfWeek(), 
-                    now()->endOfWeek()
-                ]);
-            })->count();
+        // 2. Servicios pendientes con más de 5 días (excluyendo cancelados)
+        $serviciosAtrasados = ServicioTecnico::whereIn('estado', ['por_tomar', 'en_proceso']) // Solo estados pendientes
+        ->where('created_at', '<', now()->subDays(5))
+        ->select('id_servicio', 'codigo', 'cliente', 'estado', 'created_at')
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->map(function ($servicio) {
+            $servicio->dias_atraso = Carbon::now()->diffInDays($servicio->created_at);
+            return $servicio;
+        });
 
-        // 3. Productos utilizados esta semana
-        $detallesConProductos = DetalleServicio::with('servicio')
-            ->whereBetween('created_at', [
-                now()->startOfWeek(), 
-                now()->endOfWeek()
-            ])
-            ->get();
-
-        // Procesamiento de productos utilizados
-        $productosUtilizados = 0;
-        $productosData = [];
-        
-        foreach ($detallesConProductos as $detalle) {
+        // 3. Productos utilizados esta semana con nombres
+        $productosUtilizados = DetalleServicio::whereBetween('created_at', [
+            now()->startOfWeek(), 
+            now()->endOfWeek()
+        ])
+        ->get()
+        ->flatMap(function($detalle) {
             if (!empty($detalle->productos_utilizados)) {
-                foreach ($detalle->productos_utilizados as $producto) {
-                    $cantidad = $producto['cantidad'] ?? 0;
-                    $productosUtilizados += $cantidad;
-                    
-                    // Preparación para productos más usados
-                    $nombre = $producto['nombre'] ?? 'Desconocido';
-                    if (!isset($productosData[$nombre])) {
-                        $productosData[$nombre] = 0;
-                    }
-                    $productosData[$nombre] += $cantidad;
-                }
+                return collect($detalle->productos_utilizados)->map(function($cantidad, $idProducto) {
+                    $producto = Producto::find($idProducto);
+                    return [
+                        'id' => $idProducto,
+                        'nombre' => $producto ? $producto->nombre : 'Producto desconocido',
+                        'cantidad' => $cantidad,
+                        'unidad' => $producto ? $this->determinarUnidad($producto->nombre) : 'unid.'
+                    ];
+                });
             }
-        }
+            return [];
+        })
+        ->groupBy('id')
+        ->map(function($items, $id) {
+            return [
+                'id' => $id,
+                'nombre' => $items->first()['nombre'],
+                'total' => $items->sum('cantidad'),
+                'unidad' => $items->first()['unidad']
+            ];
+        })
+        ->sortByDesc('total')
+        ->values();
 
         // 4. Servicios por día
         $diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
@@ -64,39 +69,21 @@ class DashboardController extends Controller
             $serviciosPorDia[] = ServicioTecnico::whereDate('created_at', $date)->count();
         }
 
-        // 5. Top técnicos (que más servicios han confirmado)
-        $topTecnicos = User::role('tecnico')
-            ->withCount(['detallesServicios' => function($query) {
-                $query->whereBetween('created_at', [
-                    now()->startOfWeek(), 
-                    now()->endOfWeek()
-                ]);
-            }])
-            ->orderByDesc('detalles_servicios_count')
-            ->limit(5)
-            ->get();
-
-        // 6. Productos más usados esta semana (versión optimizada)
-        $productosMasUsados = collect($productosData)
-            ->map(function ($total, $nombre) {
-                return [
-                    'nombre' => $nombre,
-                    'total' => $total
-                ];
-            })
-            ->sortByDesc('total')
-            ->take(5)
-            ->values()
-            ->all();
-
         return view('dashboard', compact(
             'serviciosSemana',
-            'tecnicosActivos',
+            'serviciosAtrasados',
             'productosUtilizados',
             'diasSemana',
-            'serviciosPorDia',
-            'topTecnicos',
-            'productosMasUsados'
+            'serviciosPorDia'
         ));
     }
-}
+
+    private function determinarUnidad($nombreProducto)
+    {
+        if (str_contains(strtolower($nombreProducto), 'cable') || 
+            str_contains(strtolower($nombreProducto), 'metro')) {
+            return 'm';
+        }
+        return 'unid.';
+    }
+}   

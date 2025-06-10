@@ -2,8 +2,10 @@
 namespace App\Livewire\Productos;
 
 use Livewire\Component;
-use App\Models\Producto; 
-use Livewire\WithPagination; 
+use App\Models\Producto;
+use App\Models\Categoria;
+use Livewire\WithPagination;
+use Illuminate\Support\Str;
 
 class Index extends Component
 {
@@ -13,14 +15,16 @@ class Index extends Component
     public $perPage = 10;
     public $sortField = 'nombre';
     public $sortDirection = 'asc';
-    public $estado = 'activo'; 
+    public $estado = '';
+    public $categoria = '';
     
     protected $queryString = [
         'search' => ['except' => ''],
         'perPage' => ['except' => 10],
-        'sortField',
-        'sortDirection',
-        'estado' => ['except' => 'activo']
+        'sortField' => ['except' => 'nombre'],
+        'sortDirection' => ['except' => 'asc'],
+        'estado' => ['except' => ''],
+        'categoria' => ['except' => '']
     ];
     
     protected $listeners = [
@@ -40,7 +44,6 @@ class Index extends Component
         $this->sortField = $field;
     }
 
-    // Eliminación lógica (cambia estado a inactivo)
     public function delete($id)
     {
         $producto = Producto::findOrFail($id);
@@ -50,7 +53,6 @@ class Index extends Component
         $this->dispatch('producto-actualizado');
     }
 
-    // Cambiar estado (activo/inactivo)
     public function toggleStatus($id)
     {
         $producto = Producto::findOrFail($id);
@@ -65,6 +67,7 @@ class Index extends Component
     {
         $this->dispatch('abrir-modal-edicion', id: $id)->to(Edit::class);
     }
+
     public function mount()
     {
         $this->authorize('ver producto');
@@ -72,18 +75,32 @@ class Index extends Component
     
     public function render()
     {
+        $query = Producto::query()
+            ->with(['proveedor', 'categoria'])
+            ->when($this->search, function($query) {
+                $query->where(function($q) {
+                    $q->where('nombre', 'like', '%'.$this->search.'%')
+                      ->orWhere('detalle', 'like', '%'.$this->search.'%')
+                      ->orWhere('ubicacion', 'like', '%'.$this->search.'%')
+                      ->orWhereHas('categoria', function($q) {
+                          $q->where('nombre', 'like', '%'.$this->search.'%');
+                      })
+                      ->orWhereHas('proveedor', function($q) {
+                          $q->where('nombre_empresa', 'like', '%'.$this->search.'%');
+                      });
+                });
+            })
+            ->when($this->estado, function($query) {
+                $query->where('estado', $this->estado);
+            })
+            ->when($this->categoria, function($query) {
+                $query->where('id_categoria', $this->categoria);
+            })
+            ->orderBy($this->sortField, $this->sortDirection);
+
         return view('livewire.productos.index', [
-            'productos' => Producto::query()
-                ->with(['proveedor', 'categoria'])
-                ->when($this->search, function($query) {
-                    $query->where('nombre', 'like', '%'.$this->search.'%')
-                        ->orWhere('detalle', 'like', '%'.$this->search.'%');
-                })
-                ->when($this->estado, function($query) {
-                    $query->where('estado', $this->estado);
-                })
-                ->orderBy($this->sortField, $this->sortDirection)
-                ->paginate($this->perPage)
+            'productos' => $query->paginate($this->perPage),
+            'categorias' => Categoria::orderBy('nombre')->get()
         ]);
     }
 }

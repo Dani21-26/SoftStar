@@ -1,13 +1,14 @@
 <div>
     <div class="relative mb-5 w-full">
-        <flux:heading size="xl" level="1">{{ __('Lista de Herramientas') }}</flux:heading>
+        <flux:heading size="xl" level="1">{{ __('Lista de Productos') }}</flux:heading>
         <flux:separator variant="subtle" />
         <flux:modal.trigger name="edit-profile">
-            <flux:button>Añadir </flux:button>
+            <flux:button>Añadir Producto</flux:button>
         </flux:modal.trigger>
         <livewire:productos.create />
         <livewire:productos.edit />
     </div>
+
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <!-- Barra de búsqueda y filtros -->
         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -40,24 +41,42 @@
                             <option value="inactivo">Inactivos</option>
                         </select>
                     </div>
+
+                    <!-- Filtro por categoría -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm dark:text-gray-300">Categoría:</span>
+                        <select wire:model.live="categoria"
+                            class="text-sm border rounded-lg dark:bg-gray-700 px-2 py-1">
+                            <option value="">Todas</option>
+                            @foreach ($categorias as $cat)
+                                <option value="{{ $cat->id_categoria }}">{{ $cat->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Tabla de productos -->
         <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
-                        <th class="px-4 py-3 whitespace-nowrap">ID</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Nombre</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Stock</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Categoría</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Ubicación</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Precio</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Proveedor</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Estado</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Acciones</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"" wire:click="sortBy('id')">
+                            ID {!! $sortField === 'id' ? ($sortDirection === 'asc' ? '&uarr;' : '&darr;') : '' !!}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"" wire:click="sortBy('nombre')">
+                            Nombre {!! $sortField === 'nombre' ? ($sortDirection === 'asc' ? '&uarr;' : '&darr;') : '' !!}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Stock</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Categoría</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Ubicación</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"" wire:click="sortBy('precio')">
+                            Precio {!! $sortField === 'precio' ? ($sortDirection === 'asc' ? '&uarr;' : '&darr;') : '' !!}
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Proveedor</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Estado</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,14 +85,31 @@
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                             <td class="px-4 py-4">{{ $producto->id }}</td>
                             <td class="px-4 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
-                                {{ Str::limit($producto->nombre, 20) }}
+                                {{ Str::limit($producto->nombre, 25) }}
+                                @if ($producto->detalle)
+                                    <span class="block text-xs text-gray-500 dark:text-gray-400">
+                                        {{ Str::limit($producto->detalle, 30) }}
+                                    </span>
+                                @endif
                             </td>
-                            <td class="px-4 py-4">{{ $producto->stock }}</td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                <span class="font-semibold">{{ $producto->cantidad_stock }}</span>
+                                <span class="text-xs text-gray-500">{{ $producto->unidad_stock }}</span>
+                            </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 {{ $producto->categoria->nombre ?? 'N/A' }}
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">{{ $producto->ubicacion }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap">${{ number_format($producto->precio, 2) }}</td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                ${{ number_format($producto->precio, 0, ',', '.') }}
+                                @if ($producto->precio >= 1000000)
+                                    <span
+                                        class="block text-xs text-gray-500">({{ number_format($producto->precio / 1000000, 2) }}M)</span>
+                                @elseif($producto->precio >= 1000)
+                                    <span
+                                        class="block text-xs text-gray-500">({{ number_format($producto->precio / 1000, 1) }}K)</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-4">
                                 <div class="whitespace-nowrap">
                                     {{ $producto->proveedor->nombre_empresa ?? 'N/A' }}
@@ -87,26 +123,47 @@
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <span
                                     class="px-2 py-1 text-xs font-semibold rounded-full 
-                                {{ $producto->estado == 'activo' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                                    {{ $producto->estado == 'activo' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
                                     {{ ucfirst($producto->estado) }}
                                 </span>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 <div class="flex gap-2">
                                     <button wire:click="$dispatch('abrir-modal-edicion', { id: {{ $producto->id }} })"
-                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400">
-                                        Editar
+                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400" title="Editar">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path
+                                                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                        </svg>
                                     </button>
                                     <button wire:click="toggleStatus({{ $producto->id }})"
-                                        class="text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-600 hover:text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-900 dark:text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-400">
-                                        {{ $producto->estado == 'activo' ? 'Desactivar' : 'Activar' }}
+                                        class="text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-600 hover:text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-900 dark:text-{{ $producto->estado == 'activo' ? 'yellow' : 'green' }}-400"
+                                        title="{{ $producto->estado == 'activo' ? 'Desactivar' : 'Activar' }}">
+                                        @if ($producto->estado == 'activo')
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        @endif
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-4 text-center">No se encontraron productos</td>
+                            <td colspan="9" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                No se encontraron productos
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -118,24 +175,4 @@
             {{ $productos->links() }}
         </div>
     </div>
-    @push('scripts')
-        <script>
-            // Confirmación de eliminación con SweetAlert
-            window.addEventListener('swal:confirm', event => {
-                Swal.fire({
-                    title: event.detail.title,
-                    text: event.detail.text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.livewire.emit('delete', event.detail.id);
-                    }
-                });
-            });
-        </script>
-    @endpush
+</div>

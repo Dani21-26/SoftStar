@@ -61,42 +61,42 @@
         <!-- Tabla de proveedores -->
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
+                <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             <button wire:click="sortBy('id_proveedor')" class="flex items-center">
                                 ID
                             </button>
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             <button wire:click="sortBy('nombre_empresa')" class="flex items-center">
                                 Empresa
                             </button>
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             <button wire:click="sortBy('contacto_nombre')" class="flex items-center">
                                 Contacto
                             </button>
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Teléfono
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Correo
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             <button wire:click="sortBy('estado')" class="flex items-center">
                                 Estado
                             </button>
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             Acciones
                         </th>
                     </tr>

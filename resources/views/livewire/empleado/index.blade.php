@@ -66,24 +66,24 @@
         <!-- Tabla de empleados -->
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
-                        <th scope="col" class="px-4 py-3 whitespace-nowrap cursor-pointer"
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
                             wire:click="sortBy('id_empleado')">
                             ID {!! $sortField === 'id_empleado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
                         </th>
-                        <th scope="col" class="px-4 py-3 whitespace-nowrap cursor-pointer"
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
                             wire:click="sortBy('nombre')">
                             Nombre {!! $sortField === 'nombre' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
                         </th>
-                        <th scope="col" class="px-4 py-3 whitespace-nowrap cursor-pointer"
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
                             wire:click="sortBy('cargo')">
                             Cargo {!! $sortField === 'cargo' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
                         </th>
-                        <th class="px-4 py-3 whitespace-nowrap">Ubicación</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Teléfono</th>
-                        <th class="px-4 py-3 whitespace-nowrap">Correo</th>
-                        <th class="px-4 py-3 whitespace-nowrap cursor-pointer" wire:click="sortBy('estado')">
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Ubicación</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Teléfono</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Correo</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider" wire:click="sortBy('estado')">
                             Estado {!! $sortField === 'estado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
                         </th>
                         @canany(['editar empleado', 'cambiar estado empleado'])

@@ -12,72 +12,83 @@ class Create extends Component
 {
     public $nombre = '';
     public $detalle = '';
-    public $stock = 0;
+    public $stock_cantidad = 0;
+    public $stock_unidad = 'unidades';
     public $id_categoria = null;
     public $ubicacion = '';
-    public $precio = 0;
+    public $precio_cantidad = 0;
+    public $precio_unidad = 1; // 1=COP, 1000=miles, 1000000=millones
     public $id_proveedor = null;
 
+    protected $rules = [
+        'nombre' => 'required|string|max:255',
+        'detalle' => 'required|string',
+        'stock_cantidad' => 'required|numeric|min:0',
+        'stock_unidad' => 'required|in:unidades,metros,rollos,juegos',
+        'id_categoria' => 'required|exists:categorias,id_categoria',
+        'ubicacion' => 'required|string|max:255',
+        'precio_cantidad' => 'required|numeric|min:0',
+        'precio_unidad' => 'required|in:1,1000,1000000',
+        'id_proveedor' => 'required|exists:proveedores,id_proveedor'
+    ];
 
-protected $rules = [
-    'nombre' => 'required|string|max:255',
-    'detalle' => 'required|string',
-    'stock' => 'required|integer|min:0',
-    'id_categoria' => 'required|exists:categorias,id_categoria',
-    'ubicacion' => 'required|string|max:255',
-    'precio' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'], // Acepta números con hasta 2 decimales
-    'id_proveedor' => 'required|exists:proveedores,id_proveedor'
-];
+    protected $messages = [
+        'precio_cantidad.numeric' => 'El precio debe ser un número válido',
+        'stock_cantidad.numeric' => 'La cantidad debe ser un número válido',
+        '*.required' => 'Este campo es obligatorio',
+    ];
 
-protected $messages = [
-    'precio.regex' => 'El precio debe ser un número válido con hasta dos decimales',
-    'precio.required' => 'El precio es obligatorio',
-];
-public function save()
-{
-    $this->validate();
-
-    try {
-        // Depuración: Ver datos antes de guardar
-        logger()->info('Datos validados:', $this->all());
+    public function updatedIdCategoria($value)
+    {
+        // Si la categoría seleccionada es "Cable" (ajusta el ID según tu base de datos)
+        $categoriaCable = Categoria::where('nombre', 'like', '%cable%')->first();
         
-        // Conversión explícita de tipos
-        $producto = Producto::create([
-            'nombre' => $this->nombre,
-            'detalle' => $this->detalle,
-            'stock' => (int)$this->stock,
-            'id_categoria' => (int)$this->id_categoria,
-            'ubicacion' => $this->ubicacion,
-            'precio' => (float)$this->precio,
-            'id_proveedor' => (int)$this->id_proveedor,
-            'estado' => 'activo'
-        ]);
-
-        // Depuración: Ver producto creado
-        logger()->info('Producto creado:', $producto->toArray());
-        
-        $this->reset();
-        session()->flash('success', 'Producto creado correctamente');
-        
-        $this->redirect(route('productos.index'));
-
-        
-    } catch (\Exception $e) {
-        logger()->error('Error al guardar:', ['error' => $e->getMessage()]);
-        session()->flash('error', 'Error al guardar: '.$e->getMessage());
-        
-        // Depuración adicional
-        if (app()->environment('local')) {
-            dd($e->getMessage(), $e->getTrace());
+        if ($categoriaCable && $value == $categoriaCable->id_categoria) {
+            $this->stock_unidad = 'metros';
+        } else {
+            $this->stock_unidad = 'unidades';
         }
     }
-}
 
-public function mount()
-{
-    $this->authorize('crear producto');
-}
+    public function save()
+    {
+        $this->validate();
 
+        try {
+            // Combina cantidad y unidad para el stock
+            $stock = $this->stock_cantidad . ' ' . $this->stock_unidad;
+            
+            // Calcula el precio final
+            $precio = $this->precio_cantidad * $this->precio_unidad;
+
+            $producto = Producto::create([
+                'nombre' => $this->nombre,
+                'detalle' => $this->detalle,
+                'stock' => $stock,
+                'id_categoria' => (int)$this->id_categoria,
+                'ubicacion' => $this->ubicacion,
+                'precio' => $precio,
+                'id_proveedor' => (int)$this->id_proveedor,
+                'estado' => 'activo'
+            ]);
+
+            session()->flash('success', 'Producto creado correctamente');
+            $this->redirect(route('productos.index'));
+
+        } catch (\Exception $e) {
+            logger()->error('Error al guardar:', ['error' => $e->getMessage()]);
+            session()->flash('error', 'Error al guardar: '.$e->getMessage());
+            
+            if (app()->environment('local')) {
+                dd($e->getMessage(), $e->getTrace());
+            }
+        }
+    }
+
+    public function mount()
+    {
+        $this->authorize('crear producto');
+    }
 
     public function render()
     {

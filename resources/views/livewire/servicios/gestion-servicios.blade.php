@@ -130,173 +130,180 @@
                     <select wire:model.live="estadoFiltro"
                         class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                               dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                        <option value="">Todos</option>
+                        <option value="" selected>Todos</option> <!-- Añade selected aquí -->
                         <option value="pendiente">Pendientes</option>
                         <option value="completado">Completados</option>
                         <option value="cancelado">Cancelados</option>
                     </select>
                 </div>
+            </div>
 
-                <!-- Búsqueda -->
-                <div class="w-full sm:w-64">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Buscar
-                        servicios</label>
-                    <div class="relative">
-                        <input type="text" wire:model.live.debounce.300ms="search"
-                            class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            <!-- Búsqueda -->
+            <div class="w-full sm:w-64">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Buscar
+                    servicios</label>
+                <div class="relative">
+                    <input type="text" wire:model.live.debounce.300ms="search"
+                        class="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                                       dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            placeholder="Buscar...">
-                        <div class="absolute left-3 top-2.5 text-gray-400 dark:text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </div>
+                        placeholder="Buscar...">
+                    <div class="absolute left-3 top-2.5 text-gray-400 dark:text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Lista de servicios -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
-                    <tr>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Código</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Cliente</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Router</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Litebean</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Falla</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Estado</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Fecha</th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($servicios as $servicio)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $servicio->codigo }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-900 dark:text-gray-100">{{ $servicio->cliente }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $servicio->router }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $servicio->litebean }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
-                                    {{ $servicio->falla_reportada }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span @class([
-                                    'px-2 py-1 text-xs font-semibold rounded-full',
-                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' =>
-                                        $servicio->estado === 'por_tomar',
-                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' =>
-                                        $servicio->estado === 'en_proceso',
-                                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' =>
-                                        $servicio->estado === 'confirmado',
-                                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' =>
-                                        $servicio->estado === 'cancelado',
-                                ])>
-                                    {{ ucfirst(str_replace('_', ' ', $servicio->estado)) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $servicio->created_at->format('d/m/Y') }}
-                                </div>
-                                <div class="text-xs text-gray-400 dark:text-gray-500">
-                                    {{ $servicio->created_at->format('H:i') }}
-                                </div>
-                            </td>
-
-
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-3">
-                                    <!-- Mostrar siempre Cancelar y Confirmar para servicios pendientes -->
-                                    @if ($servicio->estado === 'pendiente')
-                                        <button wire:click="abrirModalConfirmar({{ $servicio->id_servicio }})"
-                                            class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 flex items-center ml-3">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 13l4 4L19 7" />
-                                            </svg>
-                                            <span>Confirmar</span>
-                                        </button>
-                                        <button wire:click="cancelarServicio({{ $servicio->id_servicio }})"
-                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center ml-3"
-                                            title="Cancelar servicio">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                            <span>Cancelar</span>
-                                        </button>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-8 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $esTecnico ? 'No hay servicios disponibles' : 'No se encontraron servicios' }}
-                                </h3>
-                                <p class="mt-1 text-gray-500 dark:text-gray-400">
-                                    {{ $esTecnico ? 'Todos los servicios han sido asignados' : 'Intenta ajustar los filtros de búsqueda' }}
-                                </p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            @include('livewire.servicios.modal-confirmar-servicio')
-        </div>
-
-        <!-- Paginación y resumen -->
-        <div
-            class="px-6 py-4 border-t dark:border-gray-700 flex flex-col md:flex-row md:items-center md:justify-between">
-            <div class="text-sm text-gray-500 dark:text-gray-400 mb-4 md:mb-0">
-                Mostrando {{ $servicios->firstItem() ?? 0 }} - {{ $servicios->lastItem() ?? 0 }} de
-                {{ $servicios->total() }} servicios
-            </div>
-            <div>
-                {{ $servicios->links() }}
-            </div>
-        </div>
     </div>
+
+    <!-- Lista de servicios -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-blue-500 dark:bg-blue-600">
+
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Cliente
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Router
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Litebean
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Dirección
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Falla
+                    </th>
+                    
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Estado
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Fecha
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                @forelse($servicios as $servicio)
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-gray-100">{{ $servicio->cliente }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $servicio->router }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $servicio->litebean }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-gray-100">{{ $servicio->direccion }}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
+                                {{ $servicio->falla_reportada }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span @class([
+                                'px-2 py-1 text-xs font-semibold rounded-full',
+                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' =>
+                                    $servicio->estado === 'por_tomar',
+                                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' =>
+                                    $servicio->estado === 'en_proceso',
+                                'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' =>
+                                    $servicio->estado === 'confirmado',
+                                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' =>
+                                    $servicio->estado === 'cancelado',
+                            ])>
+                                {{ ucfirst(str_replace('_', ' ', $servicio->estado)) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ $servicio->created_at->format('d/m/Y') }}
+                            </div>
+                            <div class="text-xs text-gray-400 dark:text-gray-500">
+                                {{ $servicio->created_at->format('H:i') }}
+                            </div>
+                        </td>
+
+
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-3">
+                                <!-- Mostrar siempre Cancelar y Confirmar para servicios pendientes -->
+                                @if ($servicio->estado === 'pendiente')
+                                    <button wire:click="abrirModalConfirmar({{ $servicio->id_servicio }})"
+                                        class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 flex items-center ml-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        <span>Confirmar</span>
+                                    </button>
+                                    <button wire:click="cancelarServicio({{ $servicio->id_servicio }})"
+                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center ml-3"
+                                        title="Cancelar servicio">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span>Cancelar</span>
+                                    </button>
+                                @endif
+
+                                @if ($servicio->estado === 'completado')
+                                    <button wire:click="eliminarServicio({{ $servicio->id_servicio }})"
+                                        onclick="return confirm('¿Estás seguro de eliminar este servicio completado?')"
+                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center ml-3"
+                                        title="Eliminar servicio">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        <span>Eliminar</span>
+                                    </button>
+                                @endif
+                            </div>
+                        </td>
+    </div>
+    </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="8" class="px-6 py-8 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-500"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ $esTecnico ? 'No hay servicios disponibles' : 'No se encontraron servicios' }}
+            </h3>
+            <p class="mt-1 text-gray-500 dark:text-gray-400">
+                {{ $esTecnico ? 'Todos los servicios han sido asignados' : 'Intenta ajustar los filtros de búsqueda' }}
+            </p>
+        </td>
+    </tr>
+    @endforelse
+    </tbody>
+    </table>
+    @include('livewire.servicios.modal-confirmar-servicio')
 </div>
 
-
+<!-- Paginación y resumen -->
+<div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col md:flex-row md:items-center md:justify-between">
+    <div class="text-sm text-gray-500 dark:text-gray-400 mb-4 md:mb-0">
+        Mostrando {{ $servicios->firstItem() ?? 0 }} - {{ $servicios->lastItem() ?? 0 }} de
+        {{ $servicios->total() }} servicios
+    </div>
+    <div>
+        {{ $servicios->links() }}
+    </div>
+</div>
+</div>
+</div>

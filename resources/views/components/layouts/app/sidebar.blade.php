@@ -10,7 +10,7 @@
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('dashboard') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
-            <x-app-logo />
+            
         </a>
 
         <flux:navlist variant="outline">
@@ -23,6 +23,9 @@
 
         <flux:navlist.item icon="eye" href="{{ route('servicios.gestion') }}">
             {{ __('Servicios Tecnicos') }}
+        </flux:navlist.item>
+        <flux:navlist.item icon="check-circle" href="{{ route('servicios.historial') }}">
+            {{ __('Sevicios Completados') }}
         </flux:navlist.item>
         <flux:navlist.item icon="user" href="{{ route('users.create') }}">
             {{ __('Users') }}

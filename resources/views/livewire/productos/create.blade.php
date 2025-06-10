@@ -1,37 +1,74 @@
 <div>
     <flux:modal name="edit-profile" class="md:w-1000">
-        <form wire:submit.prevent="save" class="space-y-6">
+        <form wire:submit.prevent="save" class="space-y-6 bg-white p-6 rounded-lg">
             <div>
-                <flux:heading size="lg">Nueva Herramienta</flux:heading>
+                <flux:heading size="lg" class="text-gray-800">Nueva Herramienta</flux:heading>
             </div>
 
             <!-- Nombre -->
-            <flux:input label="Nombre" placeholder="Ej: Taladro profesional" wire:model.defer="nombre" />
+            <div>
+                <flux:input label="Nombre" placeholder="Ej: Taladro profesional" wire:model.defer="nombre"
+                    class="bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+            </div>
 
             <!-- Detalle -->
-            <flux:input label="Detalle" placeholder="Descripción del producto" wire:model.defer="detalle" />
+            <div>
+                <flux:input label="Detalle" placeholder="Descripción del producto" wire:model.defer="detalle"
+                    class="bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+            </div>
 
-            <!-- Stock -->
-            <flux:input label="Stock" placeholder="Cantidad disponible" type="number" wire:model.defer="stock" />
+            <!-- Stock - Campo modificado -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                <div class="flex gap-2">
+                    <input type="number" step="0.01" wire:model.defer="stock_cantidad"
+                        class="flex-1 border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Cantidad">
+                    <select wire:model.defer="stock_unidad"
+                        class="border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500">
+                        <option value="unidades">Unidades</option>
+                        <option value="metros">Metros</option>
+                        <option value="rollos">Rollos</option>
+                        <option value="juegos">Juegos</option>
+                    </select>
+                </div>
+                @error('stock')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
 
             <!-- Categoría (Select) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categoría</label>
-                <select wire:model="id_categoria" class="w-full border rounded p-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                <select wire:model="id_categoria" wire:change="actualizarUnidadMedida"
+                    class="w-full border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500 bg-white">
                     <option value="">Seleccione una categoría</option>
                     @foreach ($categorias as $categoria)
                         <option value="{{ $categoria->id_categoria }}">{{ $categoria->nombre }}</option>
                     @endforeach
                 </select>
-
             </div>
 
             <!-- Ubicación -->
-            <flux:input label="Ubicación" placeholder="Ej: Estantería A2" wire:model.defer="ubicacion" />
+            <div>
+                <flux:input label="Ubicación" placeholder="Ej: Estantería A2" wire:model.defer="ubicacion"
+                    class="bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500" />
+            </div>
 
             <!-- Precio -->
             <div>
-                <flux:input label="Precio" wire:model.defer="precio" type="number" step="0.01" />
+                <label class="block text-sm font-medium text-gray-700 mb-1">Precio</label>
+                <div class="flex gap-2">
+                    <input type="number" step="0.01" wire:model.defer="precio"
+                        class="flex-1 border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="Ej: 1.5">
+                    <select wire:model.defer="precio_unidad"
+                        class="border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500">
+                        <option value="1">COP</option>
+                        <option value="1000">Miles de COP</option>
+                        <option value="1000000">Millones de COP</option>
+                    </select>
+                </div>
                 @error('precio')
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
@@ -39,8 +76,9 @@
 
             <!-- Proveedor (Select) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Proveedor</label>
-                <select wire:model="id_proveedor" class="w-full border rounded p-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Proveedor</label>
+                <select wire:model="id_proveedor"
+                    class="w-full border border-gray-300 rounded-md p-2 focus:border-blue-500 focus:ring-blue-500 bg-white">
                     <option value="">Seleccione un proveedor</option>
                     @foreach ($proveedores as $proveedor)
                         <option value="{{ $proveedor->id_proveedor }}">
@@ -53,9 +91,11 @@
                 @enderror
             </div>
 
-            <div class="flex">
+            <div class="flex pt-4">
                 <flux:spacer />
-                <flux:button type="submit" variant="primary">Guardar</flux:button>
+                <flux:button type="submit" variant="primary" class="bg-blue-600 hover:bg-blue-700 text-white">
+                    Guardar
+                </flux:button>
             </div>
         </form>
     </flux:modal>

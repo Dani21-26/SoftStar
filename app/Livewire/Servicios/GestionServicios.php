@@ -10,6 +10,7 @@ use App\Models\Producto;
 use App\Models\ServicioProducto;
 use App\Models\DetalleServicio;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GestionServicios extends Component
 {
@@ -189,60 +190,57 @@ class GestionServicios extends Component
     }
 
     public function confirmarServicio()
-{
-    $this->validate([
-        'solucionAplicada' => 'required|min:10',
-        'productosSeleccionados' => 'array',
-        'productosSeleccionados.*' => 'numeric|min:0'
-    ]);
-
-    try {
-        DB::transaction(function () {
-            $productosUtilizados = collect($this->productosSeleccionados)
-                ->filter(fn($cantidad) => $cantidad > 0)
-                ->toArray();
-
-            // Verificar stock antes de proceder
-            foreach ($productosUtilizados as $idProducto => $cantidad) {
-                $producto = Producto::findOrFail($idProducto);
-                if ($producto->stock < $cantidad) {
-                    throw new \Exception("No hay suficiente stock para {$producto->nombre}");
+    {
+        $this->validate([
+            'solucionAplicada' => 'required|min:10',
+            'productosSeleccionados' => 'array',
+            'productosSeleccionados.*' => 'numeric|min:0'
+        ]);
+    
+        if (!$this->servicioSeleccionado || !$this->servicioSeleccionado->id_servicio) {
+            $this->dispatch('mostrarMensaje', ['error' => "No se ha seleccionado un servicio válido."]);
+            return;
+        }
+    
+        try {
+            DB::transaction(function () {
+                $productosUtilizados = [];
+    
+                foreach ($this->productosSeleccionados as $id => $cantidad) {
+                    if ($cantidad > 0) {
+                        $producto = Producto::find($id);
+                        if ($producto) {
+                            $productosUtilizados[] = [
+                                'id' => $producto->id,
+                                'nombre' => $producto->nombre,
+                                'cantidad' => $cantidad
+                            ];
+                        }
+                    }
                 }
-            }
-
-            // Crear detalle del servicio
-            $detalle = DetalleServicio::create([
-                'id_servicio' => $this->servicioSeleccionado->id_servicio,
-                'user_id' => auth()->id(),
-                'nota' => $this->solucionAplicada,
-            ]);
-
-            // Registrar productos utilizados
-            foreach ($productosUtilizados as $idProducto => $cantidad) {
-                ServicioProducto::create([
+    
+                DetalleServicio::create([
                     'id_servicio' => $this->servicioSeleccionado->id_servicio,
-                    'id_producto' => $idProducto,
-                    'cantidad' => $cantidad,
-                    'id_detalle_servicio' => $detalle->id
+                    'user_id' => auth()->id(),
+                    'nota' => $this->solucionAplicada,
+                    'productos_utilizados' => $productosUtilizados
                 ]);
-
-                Producto::where('id', $idProducto)->decrement('stock', $cantidad);
-            }
-
-            $this->servicioSeleccionado->update([
-                'estado' => 'completado',
-                'id_empleado_confirma' => auth()->id()
-            ]);
-        });
-
-        $this->modalConfirmar = false;
-        $this->dispatch('notify-success', message: 'Servicio confirmado correctamente');
-        $this->dispatch('servicio-actualizado');
-
-    } catch (\Exception $e) {
-        $this->dispatch('notify-error', message: 'Error al confirmar servicio: '.$e->getMessage());
+    
+                $this->servicioSeleccionado->estado = 'completado';
+                $this->servicioSeleccionado->save();
+            });
+    
+            $this->reset(['solucionAplicada', 'productosSeleccionados', 'servicioSeleccionado']);
+    
+            $this->dispatch('mostrarMensaje', ['success' => "El servicio fue confirmado con éxito."]);
+            $this->dispatch('cerrarModal'); 
+    
+        } catch (\Exception $e) {
+            Log::error('Error al confirmar servicio: ' . $e->getMessage());
+            $this->dispatch('mostrarMensaje', ['error' => "Ocurrió un error al confirmar el servicio."]);
+        }
     }
-}
+    
     public function incrementarProducto($idProducto)
     {
         $producto = Producto::find($idProducto);

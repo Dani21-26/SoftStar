@@ -15,6 +15,7 @@ class DetalleServicio extends Model
         'productos_utilizados'
     ];
     
+    
     protected $casts = [
         'productos_utilizados' => 'array'
     ];

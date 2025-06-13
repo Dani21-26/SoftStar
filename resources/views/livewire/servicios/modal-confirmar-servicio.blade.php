@@ -1,7 +1,7 @@
 <div>
     <!-- Modal para confirmar servicio -->
     <div x-show="$wire.modalConfirmar" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" x-cloak>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl max-h-screen overflow-y-auto">
             <div class="p-6">
                 <!-- Encabezado -->
                 <div class="flex justify-between items-center pb-4 border-b dark:border-gray-700">
@@ -13,6 +13,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+            
                 </div>
 
                 <!-- Detalles del servicio -->

@@ -29,29 +29,26 @@ class UserCreateForm extends Component
             'roles' => Role::all()
         ]);
     }
-
     public function submit()
     {
         $this->validate();
-
-        // Verificar que el usuario actual puede asignar estos roles
+    
         if (in_array('Super-Admin', $this->selectedRoleNames) && !auth()->user()->hasRole('Super-Admin')) {
             $this->addError('selectedRoleNames', 'No tienes permiso para asignar el rol Super-Admin');
             return;
         }
-
+    
         $user = User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
-            'email_verified_at' => now() 
+            'email_verified_at' => now()
         ]);
-
-        // Sincronizar usando los nombres directamente
+    
         $user->syncRoles($this->selectedRoleNames);
-
+    
         session()->flash('message', 'Usuario creado exitosamente con roles: ' . implode(', ', $this->selectedRoleNames));
-        
-        return redirect()->route('users.index');
+    
+        return redirect()->route('users.create'); // ✅ nombre correcto de la ruta
     }
-}
+}    

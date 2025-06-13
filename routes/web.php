@@ -50,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/users/create', UserCreateForm::class)->name('users.create');
     Route::get('/users/{user}/roles', UserRoleAssignment::class)->name('users.roles');
+    
     }); 
     
         

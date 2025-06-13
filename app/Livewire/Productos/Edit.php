@@ -66,7 +66,7 @@ class Edit extends Component
 
     public function updatedIdCategoria($value)
     {
-        // Si la categoría seleccionada es "Cable" (ajusta según tu base de datos)
+        // Si la categoría seleccionada es "Cable" 
         $categoriaCable = Categoria::where('nombre', 'like', '%cable%')->first();
         
         if ($categoriaCable && $value == $categoriaCable->id_categoria) {

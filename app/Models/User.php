@@ -2,20 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
-use Spatie\Permission\Models\Role;
-
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-    use HasRoles;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +34,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -61,22 +56,16 @@ class User extends Authenticatable
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
-    public function detallesServicios()
-{
-    return $this->hasMany(DetalleServicio::class, 'user_id');
-}
-public function serviciosTecnicos()
-{
-    return $this->hasMany(ServicioTecnico::class, 'tecnico_id');
-}
 
-public function roles()
-{
-    return $this->belongsToMany(
-        Role::class,
-        'model_has_roles',
-        'model_id',
-        'role_id'
-    )->where('model_type', self::class);
-}
+    public function detallesServicios()
+    {
+        return $this->hasMany(DetalleServicio::class, 'user_id');
+    }
+
+    public function serviciosTecnicos()
+    {
+        return $this->hasMany(ServicioTecnico::class, 'tecnico_id');
+    }
+
+    
 }

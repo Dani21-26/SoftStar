@@ -190,56 +190,73 @@ class GestionServicios extends Component
     }
 
     public function confirmarServicio()
-    {
-        $this->validate([
-            'solucionAplicada' => 'required|min:10',
-            'productosSeleccionados' => 'array',
-            'productosSeleccionados.*' => 'numeric|min:0'
-        ]);
-    
-        if (!$this->servicioSeleccionado || !$this->servicioSeleccionado->id_servicio) {
-            $this->dispatch('mostrarMensaje', ['error' => "No se ha seleccionado un servicio válido."]);
-            return;
-        }
-    
-        try {
-            DB::transaction(function () {
-                $productosUtilizados = [];
-    
-                foreach ($this->productosSeleccionados as $id => $cantidad) {
-                    if ($cantidad > 0) {
-                        $producto = Producto::find($id);
-                        if ($producto) {
-                            $productosUtilizados[] = [
-                                'id' => $producto->id,
-                                'nombre' => $producto->nombre,
-                                'cantidad' => $cantidad
-                            ];
+{
+    $this->validate([
+        'solucionAplicada' => 'required|min:10',
+        'productosSeleccionados' => 'array',
+        'productosSeleccionados.*' => 'numeric|min:0'
+    ]);
+
+    if (!$this->servicioSeleccionado || !$this->servicioSeleccionado->id_servicio) {
+        $this->dispatch('mostrarMensaje', ['error' => "No se ha seleccionado un servicio válido."]);
+        return;
+    }
+
+    try {
+        DB::transaction(function () {
+            $productosUtilizados = [];
+
+            foreach ($this->productosSeleccionados as $id => $cantidad) {
+                if ($cantidad > 0) {
+                    $productosUtilizados[$id] = $cantidad;
+
+                    $producto = Producto::find($id);
+                    if ($producto) {
+                        // Extraer número y unidad del campo stock (por ejemplo: "78 unidades" o "06 metros")
+                        preg_match('/(\d+)\s*(\w+)/', $producto->stock, $match);
+
+                        if (!isset($match[1]) || !isset($match[2])) {
+                            throw new \Exception("Formato de stock inválido para el producto ID {$id}.");
                         }
+
+                        $stockActual = (int)$match[1];
+                        $unidad = $match[2];
+
+                        if ($stockActual >= $cantidad) {
+                            $nuevoStock = $stockActual - $cantidad;
+                            $producto->stock = $nuevoStock . ' ' . $unidad;
+                            $producto->save();
+                        } else {
+                            throw new \Exception("Stock insuficiente para el producto ID {$id}");
+                        }
+                    } else {
+                        throw new \Exception("Producto ID {$id} no encontrado.");
                     }
                 }
-    
-                DetalleServicio::create([
-                    'id_servicio' => $this->servicioSeleccionado->id_servicio,
-                    'user_id' => auth()->id(),
-                    'nota' => $this->solucionAplicada,
-                    'productos_utilizados' => $productosUtilizados
-                ]);
-    
-                $this->servicioSeleccionado->estado = 'completado';
-                $this->servicioSeleccionado->save();
-            });
-    
-            $this->reset(['solucionAplicada', 'productosSeleccionados', 'servicioSeleccionado']);
-    
-            $this->dispatch('mostrarMensaje', ['success' => "El servicio fue confirmado con éxito."]);
-            $this->dispatch('cerrarModal'); 
-    
-        } catch (\Exception $e) {
-            Log::error('Error al confirmar servicio: ' . $e->getMessage());
-            $this->dispatch('mostrarMensaje', ['error' => "Ocurrió un error al confirmar el servicio."]);
-        }
+            }
+
+            DetalleServicio::create([
+                'id_servicio' => $this->servicioSeleccionado->id_servicio,
+                'user_id' => auth()->id(),
+                'nota' => $this->solucionAplicada,
+                'productos_utilizados' => $productosUtilizados
+            ]);
+
+            $this->servicioSeleccionado->estado = 'completado';
+            $this->servicioSeleccionado->save();
+        });
+
+        $this->reset(['solucionAplicada', 'productosSeleccionados', 'servicioSeleccionado']);
+
+        $this->dispatch('mostrarMensaje', ['success' => "El servicio fue confirmado con éxito."]);
+        $this->dispatch('cerrarModal');
+
+    } catch (\Exception $e) {
+        Log::error('Error al confirmar servicio: ' . $e->getMessage());
+        $this->dispatch('mostrarMensaje', ['error' => "Ocurrió un error al confirmar el servicio: " . $e->getMessage()]);
     }
+}
+
     
     public function incrementarProducto($idProducto)
     {
@@ -251,10 +268,15 @@ class GestionServicios extends Component
 
     public function decrementarProducto($idProducto)
     {
-        if ($this->productosSeleccionados[$idProducto] > 0) {
+        if (
+            isset($this->productosSeleccionados[$idProducto]) &&
+            is_numeric($this->productosSeleccionados[$idProducto]) &&
+            $this->productosSeleccionados[$idProducto] > 0
+        ) {
             $this->productosSeleccionados[$idProducto]--;
         }
     }
+    
     public function eliminarServicio($idServicio)
 {
     try {

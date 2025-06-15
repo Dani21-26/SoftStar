@@ -234,7 +234,7 @@
                             <div class="flex items-center space-x-3">
                                 <!-- Mostrar siempre Cancelar y Confirmar para servicios pendientes -->
                                 @if ($servicio->estado === 'pendiente')
-                                    <button wire:click="abrirModalConfirmar({{ $servicio->id_servicio }})"
+                                    <button wire:click="abrirModalConfirmar({{ $servicio->id }})"
                                         class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 flex items-center ml-3">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -243,7 +243,7 @@
                                         </svg>
                                         <span>Confirmar</span>
                                     </button>
-                                    <button wire:click="cancelarServicio({{ $servicio->id_servicio }})"
+                                    <button wire:click="cancelarServicio({{ $servicio->id }})"
                                         class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center ml-3"
                                         title="Cancelar servicio">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
@@ -252,20 +252,6 @@
                                                 d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                         <span>Cancelar</span>
-                                    </button>
-                                @endif
-
-                                @if ($servicio->estado === 'completado')
-                                    <button wire:click="eliminarServicio({{ $servicio->id_servicio }})"
-                                        onclick="return confirm('¿Estás seguro de eliminar este servicio completado?')"
-                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex items-center ml-3"
-                                        title="Eliminar servicio">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                        <span>Eliminar</span>
                                     </button>
                                 @endif
                             </div>

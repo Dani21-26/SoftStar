@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('cantidad')->default(1);
             
             $table->foreign('id_servicio')
-                ->references('id_servicio')
+                ->references('id')
                 ->on('servicio_tecnicos')
                 ->onDelete('cascade');
                 

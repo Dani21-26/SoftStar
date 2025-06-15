@@ -8,15 +8,15 @@ return new class extends Migration
     public function up()
     {
         Schema::create('servicio_tecnicos', function (Blueprint $table) {
-            $table->id('id_servicio');
+            $table->id('id');
             $table->string('codigo')->unique();
             $table->string('cliente');
             $table->string('router');
             $table->string('litebean');
             $table->text('direccion');
             $table->text('falla_reportada');
-            $table->enum('estado', ['por_tomar', 'en_proceso', 'confirmado', 'cancelado'])
-            ->default('por_tomar');
+            $table->enum('estado', [ 'pendiente','confirmado', 'cancelado'])
+            ->default('pendiente');
             $table->timestamps();
         });
     }

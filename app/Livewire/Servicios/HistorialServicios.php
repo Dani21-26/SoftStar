@@ -26,14 +26,14 @@ class HistorialServicios extends Component
     {
         // Buscar servicios completados que coincidan con la búsqueda
         $servicioIds = ServicioTecnico::query()
-            ->where('estado', 'completado')
+            ->where('estado', 'confirmado')
             ->when($this->search, function ($q) {
                 $q->where(function ($query) {
                     $query->where('cliente', 'like', '%' . $this->search . '%')
                           ->orWhere('codigo', 'like', '%' . $this->search . '%');
                 });
             })
-            ->pluck('id_servicio');
+            ->pluck('id');
 
         // Obtener detalles filtrados por servicio y fecha
         $query = DetalleServicio::with(['servicio', 'user'])
@@ -49,14 +49,14 @@ class HistorialServicios extends Component
         $detalles = $query->paginate(10);
 
         // Estadísticas
-        $totalCompletados = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'completado'))->count();
+        $totalCompletados = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'confirmado'))->count();
 
-        $completadosEsteMes = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'completado'))
+        $completadosEsteMes = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'confirmado'))
             ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
             ->count();
 
         // Obtener todos los detalles completados para sumar productos
-        $detallesCompletados = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'completado'))->get();
+        $detallesCompletados = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'confirmado'))->get();
 
         $totalProductosUtilizados = $detallesCompletados->sum(function ($detalle) {
             if (is_array($detalle->productos_utilizados)) {

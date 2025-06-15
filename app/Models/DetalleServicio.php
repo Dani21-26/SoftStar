@@ -22,7 +22,8 @@ class DetalleServicio extends Model
     
     public function servicio(): BelongsTo
     {
-        return $this->belongsTo(ServicioTecnico::class, 'id_servicio');
+        return $this->belongsTo(ServicioTecnico::class, 'id_servicio', 'id');
+
 
     }
 

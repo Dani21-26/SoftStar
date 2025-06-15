@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ServicioTecnico extends Model
 {
-    protected $primaryKey = 'id_servicio';
+    protected $primaryKey = 'id';
     
     protected $fillable = [
         'codigo', 
@@ -37,9 +37,10 @@ class ServicioTecnico extends Model
      */
     // En app/Models/ServicioTecnico.php
     public function detalle()
-    {
-    return $this->hasOne(DetalleServicio::class, 'id_servicio', 'id_servicio');
-    }
+{
+    return $this->hasOne(DetalleServicio::class, 'id_servicio', 'id');
+}
+
 
     /**
      * Obtiene el empleado que tomó el servicio

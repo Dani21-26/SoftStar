@@ -101,7 +101,7 @@ class GestionServicios extends Component
     
     try {
         DB::transaction(function () {
-            $latestId = ServicioTecnico::max('id_servicio') ?? 0;
+            $latestId = ServicioTecnico::max('id') ?? 0;
             $codigo = 'ST-' . str_pad($latestId + 1, 4, '0', STR_PAD_LEFT);
             
             ServicioTecnico::create([
@@ -113,7 +113,7 @@ class GestionServicios extends Component
                 'falla_reportada' => $this->fallaReportada,
                 'observaciones' => $this->observaciones,
                 'estado' => 'pendiente',
-                'id_empleado' => auth()->id() // Asignar el empleado que crea el servicio
+                'id_empleado' => auth()->id() 
             ]);
         });
         
@@ -129,24 +129,25 @@ class GestionServicios extends Component
     }
 }
     
-    public function cancelarServicio($idServicio)
-    {
-        $servicio = ServicioTecnico::findOrFail($idServicio);
-        
-        // Validación básica del estado
-        if (!in_array($servicio->estado, ['pendiente', 'en_proceso'])) {
-            $this->dispatch('notify-error', message: 'No se puede cancelar este servicio');
-            return;
-        }
-        
-        $servicio->update([
-            'estado' => 'cancelado',
-            'id_empleado_confirma' => auth()->id()
-        ]);
-        
-        $this->dispatch('notify-success', message: 'Servicio cancelado correctamente');
-        $this->dispatch('servicio-actualizado'); // Para refrescar la vista si es necesario
+public function cancelarServicio($id)
+{
+    $servicio = ServicioTecnico::findOrFail($id);
+
+    // Validación básica del estado
+    if (!in_array($servicio->estado, ['pendiente', 'en_proceso'])) {
+        $this->dispatch('notify-error', message: 'No se puede cancelar este servicio');
+        return;
     }
+
+    $servicio->update([
+        'estado' => 'cancelado',
+        'id_empleado_confirma' => auth()->id()
+    ]);
+
+    $this->dispatch('notify-success', message: 'Servicio cancelado correctamente');
+    $this->dispatch('servicio-actualizado'); // Refresca la vista si es necesario
+}
+
     
     public function verDetalle($idServicio)
     {
@@ -154,19 +155,17 @@ class GestionServicios extends Component
     }
     
     
-    public function abrirModalConfirmar($idServicio)
+    public function abrirModalConfirmar($id)
     {
-        $this->servicioSeleccionado = ServicioTecnico::with('productos')->find($idServicio);
-        
+        $this->servicioSeleccionado = ServicioTecnico::with('productos')->find($id);
+    
         if (!$this->servicioSeleccionado) {
             $this->dispatch('notify-error', message: 'Servicio no encontrado');
             return;
         }
-        
-        // Recargar productos y reinicializar selección
+    
         $this->cargarProductos();
-        
-        // Opcional: Si quieres cargar productos ya usados previamente
+    
         if ($this->servicioSeleccionado->productos->isNotEmpty()) {
             foreach ($this->servicioSeleccionado->productos as $productoUsado) {
                 if (isset($this->productosSeleccionados[$productoUsado->id_producto])) {
@@ -174,22 +173,24 @@ class GestionServicios extends Component
                 }
             }
         }
-        
+    
         $this->modalConfirmar = true;
     }
-    public function tomarServicio($idServicio)
-    {
-        $servicio = ServicioTecnico::findOrFail($idServicio);
-        
-        $servicio->update([
-            'id_empleado_toma' => auth()->id(),
-            'estado' => 'en_proceso'
-        ]);
-        
-        $this->dispatch('servicio-actualizado');
-    }
+    
+    public function tomarServicio($id)
+{
+    $servicio = ServicioTecnico::findOrFail($id);
 
-    public function confirmarServicio()
+    $servicio->update([
+        'id_empleado_toma' => auth()->id(),
+        'estado' => 'pendiente'
+    ]);
+
+    $this->dispatch('servicio-actualizado');
+}
+
+
+public function confirmarServicio()
 {
     $this->validate([
         'solucionAplicada' => 'required|min:10',
@@ -197,7 +198,7 @@ class GestionServicios extends Component
         'productosSeleccionados.*' => 'numeric|min:0'
     ]);
 
-    if (!$this->servicioSeleccionado || !$this->servicioSeleccionado->id_servicio) {
+    if (!$this->servicioSeleccionado || !$this->servicioSeleccionado->id) {
         $this->dispatch('mostrarMensaje', ['error' => "No se ha seleccionado un servicio válido."]);
         return;
     }
@@ -212,7 +213,6 @@ class GestionServicios extends Component
 
                     $producto = Producto::find($id);
                     if ($producto) {
-                        // Extraer número y unidad del campo stock (por ejemplo: "78 unidades" o "06 metros")
                         preg_match('/(\d+)\s*(\w+)/', $producto->stock, $match);
 
                         if (!isset($match[1]) || !isset($match[2])) {
@@ -236,13 +236,13 @@ class GestionServicios extends Component
             }
 
             DetalleServicio::create([
-                'id_servicio' => $this->servicioSeleccionado->id_servicio,
+                'id_servicio' => $this->servicioSeleccionado->id, // ← Corregido aquí
                 'user_id' => auth()->id(),
                 'nota' => $this->solucionAplicada,
                 'productos_utilizados' => $productosUtilizados
             ]);
 
-            $this->servicioSeleccionado->estado = 'completado';
+            $this->servicioSeleccionado->estado = 'confirmado';
             $this->servicioSeleccionado->save();
         });
 
@@ -256,6 +256,7 @@ class GestionServicios extends Component
         $this->dispatch('mostrarMensaje', ['error' => "Ocurrió un error al confirmar el servicio: " . $e->getMessage()]);
     }
 }
+
 
     
     public function incrementarProducto($idProducto)
@@ -288,10 +289,10 @@ class GestionServicios extends Component
 
         DB::transaction(function () use ($servicio) {
             // Eliminar productos asociados
-            ServicioProducto::where('id_servicio', $servicio->id_servicio)->delete();
+            ServicioProducto::where('id_servicio', $servicio->id)->delete();
             
             // Eliminar detalles
-            DetalleServicio::where('id_servicio', $servicio->id_servicio)->delete();
+            DetalleServicio::where('id_servicio', $servicio->id)->delete();
             
             // Eliminar servicio
             $servicio->delete();
@@ -301,7 +302,7 @@ class GestionServicios extends Component
         $this->dispatch('servicio-eliminado');
 
     } catch (\Exception $e) {
-        session()->flash('error', 'Error al eliminar: '.$e->getMessage());
+        session()->flash('error', 'Error al eliminar: ' . $e->getMessage());
     }
 }
     

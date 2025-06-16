@@ -133,10 +133,10 @@
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($serviciosAtrasados as $servicio)
                                 <tr
-                                    class="@if ($servicio->estado == 'por_tomar') bg-red-50 dark:bg-red-900/20 @elseif($servicio->estado == 'en_proceso') bg-yellow-50 dark:bg-yellow-900/20 @endif">
+                                    class="@if ($servicio->estado == 'pendiente') bg-red-50 dark:bg-red-900/20 @elseif($servicio->estado == 'en_proceso') bg-yellow-50 dark:bg-yellow-900/20 @endif">
                                     <td
                                         class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $servicio->codigo ?? '#' . $servicio->id_servicio }}
+                                        {{ $servicio->codigo ?? '#' . $servicio->id}}
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                         {{ $servicio->cliente }}

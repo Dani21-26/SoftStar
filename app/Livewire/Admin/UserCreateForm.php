@@ -49,6 +49,6 @@ class UserCreateForm extends Component
     
         session()->flash('message', 'Usuario creado exitosamente con roles: ' . implode(', ', $this->selectedRoleNames));
     
-        return redirect()->route('users.create'); // ✅ nombre correcto de la ruta
+        return redirect()->route('users.create'); 
     }
 }    

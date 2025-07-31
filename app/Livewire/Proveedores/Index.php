@@ -11,7 +11,7 @@ class Index extends Component
     use WithPagination;
     
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 4;
     public $sortField = 'nombre_empresa';
     public $sortDirection = 'asc';
     public $estado = 'activo';

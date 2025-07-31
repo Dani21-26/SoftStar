@@ -21,8 +21,8 @@
             </flux:navlist.group>
         </flux:navlist>
 
-        <flux:navlist.item icon="eye" href="{{ route('servicios.gestion') }}">
-            {{ __('Servicios Tecnicos') }}
+        <flux:navlist.item icon="eye" href="{{ route('servicios.agenda') }}">
+            {{ __('Agenda') }}
         </flux:navlist.item>
         <flux:navlist.item icon="check-circle" href="{{ route('servicios.historial') }}">
             {{ __('Sevicios Completados') }}

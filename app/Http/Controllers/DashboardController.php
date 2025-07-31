@@ -20,7 +20,7 @@ class DashboardController extends Controller
         // 2. Servicios pendientes con más de 5 días (excluyendo cancelados)
         $serviciosAtrasados = ServicioTecnico::whereIn('estado', ['pendiente']) 
         ->where('created_at', '<', now()->subDays(5))
-        ->select('id', 'codigo', 'cliente', 'estado', 'created_at')
+        ->select('id', 'cliente', 'estado', 'created_at')
         ->orderBy('created_at', 'asc')
         ->get()
         ->map(function ($servicio) {

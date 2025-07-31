@@ -55,7 +55,7 @@ class GestionServicios extends Component
         $this->mostrarFormulario = !$this->esTecnico;
         
         if($this->esTecnico) {
-            $this->estadoFiltro = 'por_tomar';
+            $this->estadoFiltro = 'pendiente';
         }
     }
     
@@ -134,7 +134,7 @@ public function cancelarServicio($id)
     $servicio = ServicioTecnico::findOrFail($id);
 
     // Validación básica del estado
-    if (!in_array($servicio->estado, ['pendiente', 'en_proceso'])) {
+    if (!in_array($servicio->estado, ['pendiente'])) {
         $this->dispatch('notify-error', message: 'No se puede cancelar este servicio');
         return;
     }

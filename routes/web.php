@@ -10,6 +10,9 @@ use App\Livewire\Productos\Show;
 use App\Livewire\Proveedores\{Index as ProveedoresIndex, Create as ProveedoresCreate, Edit as ProveedoresEdit, Show as ProveedoresShow};
 use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edit as EmpleadoEdit, Show as EmpleadoShow};
 use App\Livewire\Servicios\GestionServicios;
+use App\Livewire\Servicios\AgendaServicios;
+use App\Livewire\Servicios\CrearServicio;
+use App\Livewire\Servicios\EditarServicio;
 use App\Livewire\Servicios\HistorialServicios;
 use App\Livewire\Admin\UserCreateForm;
 use App\Livewire\Admin\UserRoleAssignment;
@@ -61,6 +64,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('servicios')->group(function () {
             // Servicios actuales (Livewire)
             Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
+            Route::get('/', AgendaServicios::class)->name('servicios.agenda');  
+            Route::get('/crear', CrearServicio::class)->name('servicios.crear');
+            Route::get('/servicios/{id}/editar', EditarServicio::class)->name('servicios.editar');
+
+
+            
+
             
             // Historial de servicios completados (Livewire)
             Route::get('/historial', HistorialServicios::class)->name('servicios.historial');

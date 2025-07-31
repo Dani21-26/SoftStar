@@ -11,14 +11,16 @@ use Illuminate\Auth\Access\AuthorizationException;
 class Index extends Component
 {
     use WithPagination;
-    
+    protected $paginationTheme = 'tailwind';
     public $search = '';
-    public $perPage = 10;
+    public $perPage = 4;
     public $sortField = 'nombre';
     public $sortDirection = 'asc';
     public $estado = 'activo';
     public $ubicacion = '';
     public $ubicacionesUnicas = [];
+    
+
     
     protected $queryString = [
         'search' => ['except' => '', 'as' => 'q'],

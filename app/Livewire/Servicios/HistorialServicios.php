@@ -24,20 +24,16 @@ class HistorialServicios extends Component
 
     public function render()
     {
-        // Buscar servicios completados que coincidan con la búsqueda
-        $servicioIds = ServicioTecnico::query()
-            ->where('estado', 'confirmado')
-            ->when($this->search, function ($q) {
-                $q->where(function ($query) {
-                    $query->where('cliente', 'like', '%' . $this->search . '%')
-                          ->orWhere('codigo', 'like', '%' . $this->search . '%');
+        // Solo datos de la tabla detalle_servicio, pero mostrando el nombre del cliente según el id_servicio
+        $query = DetalleServicio::query()
+            ->whereHas('servicio', function ($q) {
+                $q->where('estado', 'confirmado');
+            })
+            ->when($this->search, function ($query) {
+                $query->whereHas('servicio', function ($serv) {
+                    $serv->where('cliente', 'like', '%' . $this->search . '%');
                 });
             })
-            ->pluck('id');
-
-        // Obtener detalles filtrados por servicio y fecha
-        $query = DetalleServicio::with(['servicio', 'user'])
-            ->whereIn('id_servicio', $servicioIds)
             ->when($this->fechaInicio && $this->fechaFin, function ($query) {
                 $query->whereBetween('created_at', [
                     Carbon::parse($this->fechaInicio)->startOfDay(),

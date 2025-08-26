@@ -35,13 +35,17 @@ class DashboardController extends Controller
         ])
         ->get()
         ->flatMap(function($detalle) {
-            if (!empty($detalle->productos_utilizados)) {
-                return collect($detalle->productos_utilizados)->map(function($cantidad, $idProducto) {
+            // Decodificar si viene como string JSON
+            $productos = is_string($detalle->productos_utilizados)
+                ? json_decode($detalle->productos_utilizados, true)
+                : $detalle->productos_utilizados;
+            if (!empty($productos) && is_array($productos)) {
+                return collect($productos)->map(function($cantidad, $idProducto) {
                     $producto = Producto::find($idProducto);
                     return [
                         'id' => $idProducto,
                         'nombre' => $producto ? $producto->nombre : 'Producto desconocido',
-                        'cantidad' => $cantidad,
+                        'cantidad' => (int)$cantidad,
                         'unidad' => $producto ? $this->determinarUnidad($producto->nombre) : 'unid.'
                     ];
                 });
@@ -69,14 +73,31 @@ class DashboardController extends Controller
             $serviciosPorDia[] = ServicioTecnico::whereDate('created_at', $date)->count();
         }
 
+        // 5. Revisión de stock de productos
+        $umbralStock = 5;
+        $productosBajoStock = Producto::where('estado', 'activo')
+            ->where('stock', '<=', $umbralStock)
+            ->get();
+        
+        if ($productosBajoStock->count() > 0) {
+            $mensajeStock = "Algunos productos tienen stock bajo";
+            $stockEstado = 'bajo';
+        } else {
+            $mensajeStock = "Stock estable en todos los productos";
+            $stockEstado = 'estable';
+        }
         return view('dashboard', compact(
             'serviciosSemana',
             'serviciosAtrasados',
             'productosUtilizados',
             'diasSemana',
-            'serviciosPorDia'
+            'serviciosPorDia',
+            'productosBajoStock',
+            'mensajeStock',
+            'stockEstado'
         ));
     }
+    
 
     private function determinarUnidad($nombreProducto)
     {

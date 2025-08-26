@@ -63,12 +63,7 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                            <button wire:click="sortBy('id_proveedor')" class="flex items-center">
-                                ID
-                            </button>
-                        </th>
+
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
                             <button wire:click="sortBy('nombre_empresa')" class="flex items-center">
@@ -104,9 +99,6 @@
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($proveedores as $proveedor)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $proveedor->id_proveedor }}
-                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                                     {{ $proveedor->nombre_empresa }}
@@ -140,15 +132,27 @@
                                     <button
                                         wire:click="$dispatch('abrirModalEdicion', {id: {{ $proveedor->id_proveedor }}})"
                                         class="text-blue-600 hover:text-blue-900">
-                                        Editar
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path
+                                                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                        </svg>
                                     </button>
-                                    <button wire:click="toggleStatus({{ $proveedor->id_proveedor }})"
-                                        class="{{ $proveedor->estado == 'activo'
-                                            ? 'text-yellow-600 hover:text-yellow-900 dark:text-yellow-400'
-                                            : 'text-green-600 hover:text-green-900 dark:text-green-400' }}"
-                                        title="{{ $proveedor->estado == 'activo' ? 'Desactivar' : 'Activar' }}">
-                                        {{ $proveedor->estado == 'activo' ? 'Desactivar' : 'Activar' }}
-                                    </button>
+                                    @if ($proveedor->estado == 'activo')
+                                        <button wire:click="toggleStatus({{ $proveedor->id_proveedor }})"
+                                            class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400"
+                                            title="Desactivar">
+                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                                fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+
+                                        </button>
+                                    @endif
+
+
                                 </div>
                             </td>
                         </tr>

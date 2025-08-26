@@ -53,15 +53,28 @@ class Index extends Component
         $this->dispatch('producto-actualizado');
     }
 
-    public function toggleStatus($id)
-    {
-        $producto = Producto::findOrFail($id);
-        $newStatus = $producto->estado == 'activo' ? 'inactivo' : 'activo';
-        $producto->update(['estado' => $newStatus]);
-        
-        $message = $newStatus == 'activo' ? 'Producto activado' : 'Producto desactivado';
-        session()->flash('success', $message . ' correctamente');
-    }
+   public function toggleStatus($id)
+{
+    $producto = Producto::findOrFail($id);
+
+    // Cambiar estado
+    $newStatus = $producto->estado === 'activo' ? 'inactivo' : 'activo';
+    $producto->update(['estado' => $newStatus]);
+
+    // Mensajes dinámicos
+    $title   = $newStatus === 'activo' ? '¡Producto activado!' : '¡Producto desactivado!';
+    $message = $newStatus === 'activo'
+        ? 'El producto fue activado correctamente.'
+        : 'El producto fue desactivado correctamente.'; 
+
+    // Lanzar alerta
+    $this->dispatch('swal', [
+        'icon' => 'success',
+        'title' => $title,
+        'text' => $message,
+        'confirmButtonText' => 'OK',
+    ]);
+}
 
     public function edit($id)
     {

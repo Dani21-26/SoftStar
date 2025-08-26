@@ -1,12 +1,13 @@
 <div>
-    <flux:modal name="crear-empleado" class="md:w-1/2">
+    <flux:modal name="crear-empleado" wire:model="showModal" class="md:w-1/2">
+
         <form wire:submit.prevent="save" class="space-y-6">
             <!-- Encabezado -->
             <div class="flex justify-between items-center">
                 <flux:heading size="lg">Nuevo Empleado</flux:heading>
                 <button type="button" @click="$dispatch('close-modal', 'crear-empleado')"
                     class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
-                    ✕
+                    
                 </button>
             </div>
 

@@ -13,8 +13,18 @@ class AgendaServicios extends Component
     public $fechaFiltrada;
     public $search; 
     public $tecnico = '';
-
+    protected $listeners = ['servicio-confirmado' => '$refresh'];
+    public $perPage = 4;
     protected $paginationTheme = 'tailwind';
+
+
+    public function abrirModal($id)
+    {
+        $this->dispatch('set-servicio-id', id: $id);
+        // Abrir el modal usando la variable booleana del componente ConfirmarServicio
+        $this->dispatch('set-show-modal', value: true);
+    }
+    
 
     public function eliminar($id)
     {
@@ -36,27 +46,30 @@ class AgendaServicios extends Component
     {
         $this->resetPage();
     }
-
+    
     public function render()
-    {
-        $query = ServicioTecnico::with('tecnico')->orderBy('created_at', 'desc');
+{
+    $query = ServicioTecnico::with('tecnico')
+        ->where('estado', 'pendiente') // Solo mostrar servicios por confirmar
+        ->orderBy('created_at', 'desc');
 
-        if (!empty($this->fechaFiltrada)) {
-            $query->whereDate('created_at', $this->fechaFiltrada);
-        }
-
-        if (!empty($this->search)) {
-            $query->where('cliente', 'like', '%' . $this->search . '%');
-        }
-
-        if (!empty($this->tecnico)) {
-            $query->whereHas('tecnico', function ($q) {
-                $q->where('name', 'like', '%' . $this->tecnico . '%');
-            });
-        }
-
-        $servicios = $query->paginate(5);
-
-        return view('livewire.servicios.agenda-servicios', compact('servicios'));
+    if (!empty($this->fechaFiltrada)) {
+        $query->whereDate('created_at', $this->fechaFiltrada);
     }
+
+    if (!empty($this->search)) {
+        $query->where('cliente', 'like', '%' . $this->search . '%');
+    }
+
+    if (!empty($this->tecnico)) {
+        $query->whereHas('tecnico', function ($q) {
+            $q->where('name', 'like', '%' . $this->tecnico . '%');
+        });
+    }
+
+    $servicios = $query->paginate(5);
+
+    return view('livewire.servicios.agenda-servicios', compact('servicios'));
+}
+
 }

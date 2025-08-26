@@ -2,11 +2,11 @@
     <flux:modal name="edit-product" class="md:w-1000" wire:model="showModal">
         <form wire:submit.prevent="guardar" class="space-y-6">
             <!-- Encabezado -->
-            <div class="flex justify-between items-center bg-blue-500 dark:bg-blue-700">
+            <div class="flex justify-between items-center ">
                 <flux:heading size="lg">Editar Producto</flux:heading>
                 <button type="button" wire:click="cerrarModal"
                     class="text-gray-500 hover:text-gray-700 dark:text-gray-400">
-                    ✕
+                    
                 </button>
             </div>
 

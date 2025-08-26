@@ -15,17 +15,18 @@ class Producto extends Model
     protected $fillable = [
         'nombre',
         'detalle',
-        'stock', // Ahora es string (ej: "100 metros")
+        'stock',
+        'stock_unidad',
         'id_categoria',
         'ubicacion',
-        'precio', // Almacenado en COP (puede ser millones)
+        'precio', 
         'id_proveedor',
         'estado'
     ];
 
     protected $casts = [
         'precio' => 'decimal:2',
-        // Eliminamos el cast de stock a integer ya que ahora es string
+        
         'id_categoria' => 'integer',
         'id_proveedor' => 'integer'
     ];

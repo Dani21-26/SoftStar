@@ -16,6 +16,9 @@ use App\Livewire\Servicios\EditarServicio;
 use App\Livewire\Servicios\HistorialServicios;
 use App\Livewire\Admin\UserCreateForm;
 use App\Livewire\Admin\UserRoleAssignment;
+use App\Livewire\Admin\UserList;
+use App\Livewire\Admin\UserEditForm;
+
 use App\Http\Controllers\DashboardController;
 
 
@@ -51,10 +54,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/{empleado}/editar', EmpleadoEdit::class)->name('empleado.edit');
     Route::get('/{empleado}', EmpleadoShow::class)->name('empleado.show'); 
 
-    Route::get('/users/create', UserCreateForm::class)->name('users.create');
-    Route::get('/users/{user}/roles', UserRoleAssignment::class)->name('users.roles');
+    // Rutas para usuarios 
+    });
+
     
-    }); 
+    Route::prefix('users')->group(function () {
+        Route::get('/', UserList::class)->name('users.index');
+        Route::get('/create', UserCreateForm::class)->name('users.create');
+        Route::get('/{user}/edit', UserEditForm::class)->name('users.edit');
+        Route::get('/{user}/roles', UserRoleAssignment::class)->name('users.roles');
+    });
+    
     
         
     });
@@ -66,7 +76,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
             Route::get('/', AgendaServicios::class)->name('servicios.agenda');  
             Route::get('/crear', CrearServicio::class)->name('servicios.crear');
-            Route::get('/servicios/{id}/editar', EditarServicio::class)->name('servicios.editar');
+            Route::get('/servicios/{servicioId}/editar', EditarServicio::class)->name('servicios.editar');
 
 
             

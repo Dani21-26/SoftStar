@@ -49,11 +49,11 @@ class UserSeeder extends Seeder
         $roleAdmin = Role::firstOrCreate(['name' => 'Super-Admin', 'guard_name' => 'web']);
         $roleAdmin->syncPermissions(Permission::all());
 
-        // Crear usuario admin (corregida la variable $adminUser que faltaba el signo $)
+        // Crear usuario admin 
         $adminUser = User::create([
             'name' => 'Administrador',
             'email' => 'admi123@gmail.com',
-            'password' => bcrypt('Daniela21*'), // Siempre usar bcrypt para contraseñas
+            'password' => bcrypt('Admin21*'), 
             'email_verified_at' => now()
         ]);
 
@@ -77,7 +77,7 @@ class UserSeeder extends Seeder
             'confirmar servicioTecnico',
             'cancelar servicioTecnico',
             'ver recordatorios',
-            'ver producto', // Nuevo permiso para ver productos
+            'ver producto', 
             'gestionar productos servicio'
         ]);
 

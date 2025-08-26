@@ -1,5 +1,5 @@
 <div>
-    <flux:modal name="crear-proveedor" class="md:w-1000">
+    <flux:modal name="crear-proveedor" class="md:w-1000" wire:model="showModal">
         <form wire:submit.prevent="save" class="space-y-6">
             <div>
                 <flux:heading size="lg">Nuevo Proveedor</flux:heading>

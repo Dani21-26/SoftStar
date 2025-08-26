@@ -5,7 +5,7 @@
             <div x-show="open" 
                 class="inline-block bg-white dark:bg-gray-600 rounded-lg text-left overflow-hidden shadow-lg transform transition-all w-full max-w-lg">
                 
-                <form wire:submit.prevent="guardar" class="space-y-4 p-6">
+                <form wire:submit.prevent="guardar" class="space-y-4 p-6" autocomplete="off">
                     <!-- Encabezado -->
                     <div class="flex justify-between items-center pb-2 border-b dark:border-gray-700">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-white">Editar Proveedor</h2>
@@ -29,7 +29,8 @@
                         <div>
                             <flux:input label="Contacto" 
                                         placeholder="Persona de contacto" 
-                                        wire:model="contacto_nombre" 
+                                        wire:model="contacto_nombre"
+                                        autocomplete="off"
                                         required />
                             @error('contacto_nombre') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
@@ -39,7 +40,8 @@
                             <flux:input label="Teléfono" 
                                         placeholder="Número de contacto" 
                                         wire:model="telefono" 
-                                        type="tel" 
+                                        type="tel"
+                                        autocomplete="off" 
                                         required />
                             @error('telefono') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
@@ -49,7 +51,8 @@
                             <flux:input label="Correo Electrónico" 
                                         placeholder="correo@proveedor.com" 
                                         wire:model="correo"
-                                        type="email" 
+                                        type="email"
+                                        autocomplete="off" 
                                         required />
                             @error('correo') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
@@ -58,7 +61,8 @@
                         <div>
                             <flux:input label="Dirección" 
                                         placeholder="Dirección completa" 
-                                        wire:model="direccion" 
+                                        wire:model="direccion"
+                                        autocomplete="off" 
                                         required />
                             @error('direccion') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
@@ -70,6 +74,7 @@
                             </label>
                             <select wire:model="estado" 
                                     class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600"
+                                    autocomplete="off" 
                                     required>
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>

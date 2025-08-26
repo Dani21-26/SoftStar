@@ -7,16 +7,16 @@
                 <flux:separator variant="subtle" />
             </div>
             @can('crear empleado')
-            <flux:modal.trigger name="crear-empleado">
-                <flux:button>Añadir Empleado</flux:button>
-            </flux:modal.trigger>
+                <flux:modal.trigger name="crear-empleado">
+                    <flux:button>Añadir Empleado</flux:button>
+                </flux:modal.trigger>
             @endcan
         </div>
         @can('crear empleado')
-        <livewire:empleado.create />
+            <livewire:empleado.create />
         @endcan
         @can('editar empleado')
-        <livewire:empleado.edit />
+            <livewire:empleado.edit />
         @endcan
     </div>
 
@@ -63,115 +63,127 @@
         </div>
 
         @can('ver empleado')
-        <!-- Tabla de empleados -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-blue-500 dark:bg-blue-700">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
-                            wire:click="sortBy('id_empleado')">
-                            ID {!! $sortField === 'id_empleado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
-                            wire:click="sortBy('nombre')">
-                            Nombre {!! $sortField === 'nombre' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
-                            wire:click="sortBy('cargo')">
-                            Cargo {!! $sortField === 'cargo' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Ubicación</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Teléfono</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Correo</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider" wire:click="sortBy('estado')">
-                            Estado {!! $sortField === 'estado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
-                        </th>
-                        @canany(['editar empleado', 'cambiar estado empleado'])
-                        <th class="px-4 py-3 whitespace-nowrap">Acciones</th>
-                        @endcanany
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($empleados as $empleado)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $empleado->id_empleado }}
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $empleado->nombre }}
-                                </div>
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $empleado->cargo }}
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $empleado->ubicacion }}
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                {{ $empleado->telefono }}
-                            </td>
-                            <td class="px-4 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500 dark:text-gray-300 break-all">
-                                    <a href="mailto:{{ $empleado->correo }}"
-                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400">
-                                        {{ $empleado->correo }}
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+            <!-- Tabla de empleados -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-blue-500 dark:bg-blue-700">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
+                                wire:click="sortBy('nombre')">
+                                Nombre {!! $sortField === 'nombre' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
+                                wire:click="sortBy('cargo')">
+                                Cargo {!! $sortField === 'cargo' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                Ubicación</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                Teléfono</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Correo
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider"
+                                wire:click="sortBy('estado')">
+                                Estado {!! $sortField === 'estado' ? ($sortDirection === 'asc' ? '↑' : '↓') : '' !!}
+                            </th>
+                            @canany(['editar empleado', 'cambiar estado empleado'])
+                                <th class="px-4 py-3 whitespace-nowrap">Acciones</th>
+                            @endcanany
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        @forelse($empleados as $empleado)
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ $empleado->nombre }}
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {{ $empleado->cargo }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {{ $empleado->ubicacion }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {{ $empleado->telefono }}
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-500 dark:text-gray-300 break-all">
+                                        <a href="mailto:{{ $empleado->correo }}"
+                                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400">
+                                            {{ $empleado->correo }}
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                                     {{ $empleado->estado == 'activo'
                                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
-                                    {{ ucfirst($empleado->estado) }}
-                                </span>
-                            </td>
-                            @canany(['editar empleado', 'cambiar estado empleado'])
-                            <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex items-center justify-end space-x-2">
-                                    @can('editar empleado')
-                                    <button wire:click="edit({{ $empleado->id_empleado }})"
-                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 hover:underline">
-                                        Editar
-                                    </button>
-                                    @endcan
-                                    
-                                    @can('cambiar estado empleado')
-                                    <button wire:click="toggleStatus({{ $empleado->id_empleado }})"
-                                        wire:confirm="¿Estás seguro de cambiar el estado de este empleado?"
-                                        wire:loading.attr="disabled"
-                                        class="{{ $empleado->estado == 'activo' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900' }} hover:underline">
-                                        <span wire:loading.remove wire:target="toggleStatus({{ $empleado->id_empleado }})">
-                                            {{ $empleado->estado == 'activo' ? 'Desactivar' : 'Activar' }}
-                                        </span>
-                                        <span wire:loading wire:target="toggleStatus({{ $empleado->id_empleado }})">
-                                            <i class="fas fa-spinner fa-spin"></i>
-                                        </span>
-                                    </button>
-                                    @endcan
-                                </div>
-                            </td>
-                            @endcanany
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                No se encontraron empleados que coincidan con los criterios de búsqueda
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                                        {{ ucfirst($empleado->estado) }}
+                                    </span>
+                                </td>
+                                @canany(['editar empleado', 'cambiar estado empleado'])
+                                    <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex items-center justify-end space-x-2">
+                                            @can('editar empleado')
+                                                <button wire:click="edit({{ $empleado->id_empleado }})"
+                                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 hover:underline">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                                        fill="currentColor">
+                                                        <path
+                                                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                                    </svg>
+                                                </button>
+                                            @endcan
 
-        <!-- Paginación -->
-        @if ($empleados->hasPages())
-            <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6">
-                {{ $empleados->links() }}
+                                            @can('cambiar estado empleado')
+                                                @if ($empleado->estado === 'activo')
+                                                    <button wire:click="toggleStatus({{ $empleado->id_empleado }})"
+                                                        wire:confirm="¿Estás seguro de desactivar este empleado?"
+                                                        wire:loading.attr="disabled" class="text-red-600 hover:text-red-900">
+                                                        <span wire:loading.remove
+                                                            wire:target="toggleStatus({{ $empleado->id_empleado }})">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                                viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </span>
+                                                        <span wire:loading
+                                                            wire:target="toggleStatus({{ $empleado->id_empleado }})">
+                                                            <i class="fas fa-spinner fa-spin"></i>
+                                                        </span>
+                                                    </button>
+                                                @endif
+                                            @endcan
+                                        </div>
+                                    </td>
+                                @endcanany
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No se encontraron empleados que coincidan con los criterios de búsqueda
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-        @endif
+
+            <!-- Paginación -->
+            @if ($empleados->hasPages())
+                <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6">
+                    {{ $empleados->links() }}
+                </div>
+            @endif
         @endcan
     </div>
 </div>

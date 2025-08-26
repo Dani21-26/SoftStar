@@ -38,17 +38,7 @@ class Index extends Component
             $this->sortDirection = 'asc';
         }
         
-        $this->sortField = $field;
-    }
-
-    // Eliminación lógica (cambia estado a inactivo)
-    public function delete($id_proveedor)
-    {
-        $proveedor = Proveedor::findOrFail($id_proveedor);
-        $proveedor->update(['estado' => 'inactivo']);
-        
-        session()->flash('success', 'Proveedor desactivado correctamente');
-        $this->dispatch('proveedor-actualizado');
+        $this->sortField = $field; 
     }
 
     // Cambiar estado (activo/inactivo)
@@ -58,8 +48,19 @@ class Index extends Component
         $newStatus = $proveedor->estado == 'activo' ? 'inactivo' : 'activo';
         $proveedor->update(['estado' => $newStatus]);
         
-        $message = $newStatus == 'activo' ? 'Proveedor activado' : 'Proveedor desactivado';
-        session()->flash('success', $message . ' correctamente');
+       // Mensajes dinámicos
+        $title   = $newStatus === 'activo' ? '¡Proveedor activado!' : '¡Proveedor desactivado!';
+        $message = $newStatus === 'activo'
+        ? 'El provedor fue activado correctamente.'
+        : 'El proveedor fue desactivado correctamente.'; 
+
+         // Lanzar alerta
+        $this->dispatch('swal', [
+        'icon' => 'success',
+        'title' => $title,
+        'text' => $message,
+        'confirmButtonText' => 'OK',
+        ]);
     }
 
     public function edit($id_proveedor)

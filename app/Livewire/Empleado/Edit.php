@@ -22,41 +22,42 @@ class Edit extends Component
     protected function rules()
     {
         return [
-            'nombre' => 'required|string|max:255',
-            'cargo' => 'required|string|max:255',
+            'nombre'    => 'required|string|max:255',
+            'cargo'     => 'required|string|max:255',
             'ubicacion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
-            'correo' => 'required|email|unique:empleados,correo,'.$this->empleadoId.',id_empleado',
-            'estado' => 'required|in:activo,inactivo'
+            'telefono'  => 'required|string|max:20',
+            'correo'    => 'required|email|unique:empleados,correo,' . $this->empleadoId . ',id_empleado',
+            'estado'    => 'required|in:activo,inactivo',
         ];
     }
 
     protected $messages = [
         'correo.unique' => 'Este correo ya está registrado por otro empleado',
-        'required' => 'Este campo es obligatorio',
-        'email' => 'Debe ingresar un correo válido'
+        'required'      => 'Este campo es obligatorio',
+        'email'         => 'Debe ingresar un correo válido',
     ];
 
     public function abrirModal($id)
     {
         try {
             $empleado = Empleado::findOrFail($id);
-            
-            $this->empleadoId = $id;
-            $this->nombre = $empleado->nombre;
-            $this->cargo = $empleado->cargo;
-            $this->ubicacion = $empleado->ubicacion;
-            $this->telefono = $empleado->telefono;
-            $this->correo = $empleado->correo;
-            $this->estado = $empleado->estado;
-            
+
+            $this->empleadoId = $empleado->id_empleado;
+            $this->nombre     = $empleado->nombre;
+            $this->cargo      = $empleado->cargo;
+            $this->ubicacion  = $empleado->ubicacion;
+            $this->telefono   = $empleado->telefono;
+            $this->correo     = $empleado->correo;
+            $this->estado     = $empleado->estado;
+
             $this->showModal = true;
-            
+
         } catch (ModelNotFoundException $e) {
-            $this->dispatch('notify', 
-                type: 'error',
-                message: 'Empleado no encontrado'
-            );
+            $this->dispatch('swal', [
+                'icon'  => 'error',
+                'title' => 'Error',
+                'text'  => 'Empleado no encontrado.',
+            ]);
             $this->cerrarModal();
         }
     }
@@ -67,35 +68,52 @@ class Edit extends Component
 
         try {
             $empleado = Empleado::findOrFail($this->empleadoId);
-            
+
             $empleado->update([
-                'nombre' => $this->nombre,
-                'cargo' => $this->cargo,
+                'nombre'    => $this->nombre,
+                'cargo'     => $this->cargo,
                 'ubicacion' => $this->ubicacion,
-                'telefono' => $this->telefono,
-                'correo' => $this->correo,
-                'estado' => $this->estado
+                'telefono'  => $this->telefono,
+                'correo'    => $this->correo,
+                'estado'    => $this->estado,
             ]);
 
-            $this->dispatch('notify', 
-                type: 'success',
-                message: 'Empleado actualizado correctamente'
-            );
-            
-            $this->cerrarModal();
+            $this->dispatch('swal', [
+                'icon'  => 'success',
+                'title' => '¡Empleado actualizado!',
+                'text'  => 'Los datos fueron guardados correctamente.',
+            ]);
+
+            // Refrescar la lista del padre
             $this->dispatch('empleado-actualizado');
 
+            // Cerrar modal
+            $this->cerrarModal();
+
         } catch (\Exception $e) {
-            $this->dispatch('notify', 
-                type: 'error',
-                message: 'Error al actualizar: '.$e->getMessage()
-            );
+            logger()->error($e->getMessage());
+
+            $this->dispatch('swal', [
+                'icon'  => 'error',
+                'title' => 'Error',
+                'text'  => 'Error al actualizar el empleado.',
+            ]);
         }
     }
 
     public function cerrarModal()
     {
-        $this->resetExcept('empleadoId');
+        $this->reset([
+            'empleadoId',
+            'nombre',
+            'cargo',
+            'ubicacion',
+            'telefono',
+            'correo',
+            'estado',
+        ]);
+
+        // al cerrar el modal lo volvemos a false
         $this->showModal = false;
     }
 
@@ -103,12 +121,12 @@ class Edit extends Component
     {
         $this->authorize('editar empleado');
     }
-    
+
     public function render()
     {
         return view('livewire.empleado.edit', [
-            'cargosDisponibles' => $this->getCargos(),
-            'ubicacionesDisponibles' => $this->getUbicaciones()
+            'cargosDisponibles'      => $this->getCargos(),
+            'ubicacionesDisponibles' => $this->getUbicaciones(),
         ]);
     }
 
@@ -117,9 +135,9 @@ class Edit extends Component
         return [
             'Administrador',
             'Ingeniero en Redes',
-            'Servicio al Cliente', 
+            'Servicio al Cliente',
             'Servicio Técnico',
-            'Auxiliar'
+            'Auxiliar',
         ];
     }
 
@@ -127,7 +145,7 @@ class Edit extends Component
     {
         return [
             'Oficina',
-            'Campo'
+            'Campo',
         ];
     }
 }

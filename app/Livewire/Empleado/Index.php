@@ -49,7 +49,7 @@ class Index extends Component
             ->pluck('ubicacion')
             ->toArray();
 
-                      
+            
     } catch (AuthorizationException $e) {
         abort(403, 'No tienes permiso para ver esta información');
     }
@@ -80,40 +80,49 @@ class Index extends Component
     }
 
     public function toggleStatus($id_empleado)
-    {
-        try {
-            // Debug: Verificar el ID recibido
-            Log::info("Intentando cambiar estado para empleado ID: {$id_empleado}");
-            
-            // Buscar usando el campo correcto (id_empleado)
-            $empleado = Empleado::where('id_empleado', $id_empleado)->first();
-            
-            if (!$empleado) {
-                throw new \Exception("No se encontró empleado con ID: {$id_empleado}");
-            }
-            
-            Log::info("Empleado encontrado: {$empleado->nombre} (ID: {$empleado->id_empleado})");
-            
-            $newStatus = $empleado->estado == 'activo' ? 'inactivo' : 'activo';
-            $empleado->estado = $newStatus;
-            $empleado->save();
-            
-            Log::info("Estado cambiado a: {$newStatus}");
-            
-            // Forzar refresco
-            $this->dispatch('empleado-actualizado');
-            
-            session()->flash(
-                'success', 
-                $newStatus == 'activo' ? 'Empleado activado correctamente' 
-                                    : 'Empleado desactivado correctamente'
-            );
-            
-        } catch (\Exception $e) {
-            Log::error("Error en toggleStatus: " . $e->getMessage());
-            session()->flash('error', 'Error al cambiar estado: ' . $e->getMessage());
+{
+    try {
+        Log::info("Intentando cambiar estado para empleado ID: {$id_empleado}");
+        
+        $empleado = Empleado::where('id_empleado', $id_empleado)->first();
+        
+        if (!$empleado) {
+            throw new \Exception("No se encontró empleado con ID: {$id_empleado}");
         }
+
+        // Solo permitir desactivar
+        if ($empleado->estado === 'activo') {
+            $empleado->estado = 'inactivo';
+            $empleado->save();
+
+            Log::info("Empleado desactivado: {$empleado->nombre} (ID: {$empleado->id_empleado})");
+
+            $this->dispatch('empleado-actualizado');
+            $this->dispatch('swal', [
+                'icon' => 'success',
+                'title' => '¡Empleado desactivado!',
+                'text' => "El empleado fue desactivado correctamente.",
+                'confirmButtonText' => 'OK',
+            ]);
+        } else {
+            // Intento de activar desde aquí -> bloqueamos
+            $this->dispatch('swal', [
+                'icon' => 'warning',
+                'title' => 'Acción no permitida',
+                'text' => 'Un empleado inactivo solo puede ser activado desde el modal de edición.',
+            ]);
+        }
+    } catch (\Exception $e) {
+        Log::error("Error en toggleStatus: " . $e->getMessage());
+
+        $this->dispatch('swal', [
+            'icon' => 'error',
+            'title' => 'Error',
+            'text' => 'Ocurrió un error al cambiar el estado del empleado.',
+        ]);
     }
+}
+
 
 
     public function edit($id_empleado)
@@ -121,7 +130,7 @@ class Index extends Component
     $this->dispatch('abrirModalEdicion', id: $id_empleado)->to(Edit::class);
     }
     
-   
+
     public function render()
     {
         $empleados = Empleado::query()

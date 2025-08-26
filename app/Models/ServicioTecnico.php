@@ -18,10 +18,11 @@ class ServicioTecnico extends Model
         'litebean',
         'direccion',
         'falla_reportada',
+        'prioridad', 
         'estado',
         'id_empleado_toma',
         'id_empleado_confirma',
-        'id_tecnico'
+        'tecnico_id' 
     ];
 
     /**
@@ -63,8 +64,10 @@ class ServicioTecnico extends Model
      */
     public function tecnico(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'tecnico_id');
+        return $this->belongsTo(User::class, 'tecnico_id', 'id');
     }
+    
+
 
     /**
      * Scope para filtrar servicios por estado

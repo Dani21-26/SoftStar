@@ -72,22 +72,16 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Estado <span class="text-red-500">*</span>
                 </label>
-                <div class="flex space-x-4">
-                    <label class="inline-flex items-center">
-                        <input type="radio" wire:model="estado" value="activo" class="mr-2"
-                            @checked($estado == 'activo')>
-                        <span>Activo</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                        <input type="radio" wire:model="estado" value="inactivo" class="mr-2"
-                            @checked($estado == 'inactivo')>
-                        <span>Inactivo</span>
-                    </label>
-                </div>
+                <select wire:model="estado" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600"
+                    required>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
                 @error('estado')
                     <span class="text-red-500 text-xs">{{ $message }}</span>
                 @enderror
             </div>
+
 
             <!-- Botones -->
             <div class="flex gap-4 pt-4">

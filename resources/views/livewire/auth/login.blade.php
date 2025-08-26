@@ -36,7 +36,13 @@ new #[Layout('components.layouts.auth')] class extends Component {
                 'email' => __('auth.failed'),
             ]);
         }
-
+         // Verificar si el usuario está desactivado
+        if (Auth::user()->estado !== 'activo') {
+            Auth::logout(); // lo sacamos
+            throw ValidationException::withMessages([
+                'email' => 'Tu cuenta está desactivada. Contacta al administrador.',
+            ]);
+        }
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 

@@ -60,10 +60,14 @@ class Edit extends Component
         
         Proveedor::findOrFail($this->id_proveedor)->update($validated);
         
+        
         $this->dispatch('proveedor-actualizado');
         $this->cerrarModal();
-        
-        session()->flash('success', 'Proveedor actualizado correctamente');
+        $this->dispatch('swal', [
+                'icon'  => 'success',
+                'title' => '¡Proveedor actualizado!',
+                'text'  => 'Los datos fueron guardados correctamente.',
+            ]);
     }
     public function mount()
     {

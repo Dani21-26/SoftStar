@@ -18,37 +18,33 @@ class Edit extends Component
     public $id_categoria = null;
     public $ubicacion = '';
     public $precio_cantidad = 0;
-    public $precio_unidad = 1; // 1=COP, 1000=miles, 1000000=millones
+    public $precio_unidad = 1; 
     public $id_proveedor = null;
     public $estado = 'activo';
     public $showModal = false;
 
     #[On('abrir-modal-edicion')]
     public function cargarProducto($id = null)
-    {
-        if (!$id) return;
-        
-        $producto = Producto::findOrFail($id);
-        
-        // Separar stock en cantidad y unidad
-        $stockParts = explode(' ', $producto->stock);
-        $this->stock_cantidad = $stockParts[0];
-        $this->stock_unidad = $stockParts[1] ?? 'unidades';
-        
-        // Determinar precio base y unidad
-        $this->determinarPrecioBase($producto->precio);
-        
-        // Asignar el resto de propiedades
-        $this->productoId = $id;
-        $this->nombre = $producto->nombre;
-        $this->detalle = $producto->detalle;
-        $this->id_categoria = $producto->id_categoria;
-        $this->ubicacion = $producto->ubicacion;
-        $this->id_proveedor = $producto->id_proveedor;
-        $this->estado = $producto->estado;
-        
-        $this->showModal = true;
-    }
+{
+    if (!$id) return;
+    
+    $producto = Producto::findOrFail($id);
+    
+    $this->stock_cantidad = $producto->stock;
+    $this->stock_unidad   = $producto->unidad ?? 'unidades';
+
+    $this->determinarPrecioBase($producto->precio);
+    
+    $this->productoId   = $id;
+    $this->nombre       = $producto->nombre;
+    $this->detalle      = $producto->detalle;
+    $this->id_categoria = $producto->id_categoria;
+    $this->ubicacion    = $producto->ubicacion;
+    $this->id_proveedor = $producto->id_proveedor;
+    $this->estado       = $producto->estado;
+    
+    $this->showModal = true;
+}
 
     protected function determinarPrecioBase($precio)
     {
@@ -82,37 +78,58 @@ class Edit extends Component
 
     public function guardar()
     {
-        $validated = $this->validate([
-            'nombre' => 'required|string|max:255',
-            'detalle' => 'required|string',
-            'stock_cantidad' => 'required|numeric|min:0',
-            'stock_unidad' => 'required|in:unidades,metros,rollos,juegos',
-            'id_categoria' => 'required|exists:categorias,id_categoria',
-            'ubicacion' => 'required|string|max:100',
-            'precio_cantidad' => 'required|numeric|min:0',
-            'precio_unidad' => 'required|in:1,1000,1000000',
-            'id_proveedor' => 'required|exists:proveedores,id_proveedor',
-            'estado' => 'required|in:activo,inactivo'
-        ]);
-        
-        $producto = Producto::findOrFail($this->productoId);
-        
-        $producto->update([
-            'nombre' => $this->nombre,
-            'detalle' => $this->detalle,
-            'stock' => $this->stock_cantidad . ' ' . $this->stock_unidad,
-            'id_categoria' => $this->id_categoria,
-            'ubicacion' => $this->ubicacion,
-            'precio' => $this->precio_cantidad * $this->precio_unidad,
-            'id_proveedor' => $this->id_proveedor,
-            'estado' => $this->estado
-        ]);
-        
-        $this->cerrarModal();
-        $this->dispatch('producto-actualizado');
-        
-        session()->flash('success', 'Producto actualizado correctamente');
-    }
+
+        // Verificar que el proveedor seleccionado esté activo
+        $proveedor = Proveedor::where('id_proveedor', $this->id_proveedor)
+            ->where('estado', 'activo')
+            ->first();
+
+        if (!$proveedor) {
+            $this->dispatch('swal', [
+                'icon' => 'error',
+                'title' => 'Proveedor inactivo',
+                'text' => 'El proveedor seleccionado no está activo.',
+            ]);
+            return;
+        }
+
+        // Actualizar el producto
+    $validated = $this->validate([
+        'nombre'          => 'required|string|max:255',
+        'detalle'         => 'required|string',
+        'stock_cantidad'  => 'required|numeric|min:0',
+        'stock_unidad'    => 'required|in:unidades,metros,rollos,juegos',
+        'id_categoria'    => 'required|exists:categorias,id_categoria',
+        'ubicacion'       => 'required|string|max:100',
+        'precio_cantidad' => 'required|numeric|min:0',
+        'precio_unidad'   => 'required|in:1,1000,1000000',
+        'id_proveedor'    => 'required|exists:proveedores,id_proveedor',
+        'estado'          => 'required|in:activo,inactivo'
+    ]);
+    
+    $producto = Producto::findOrFail($this->productoId);
+    
+    $producto->update([
+        'nombre'       => $this->nombre,
+        'detalle'      => $this->detalle,
+        'stock'        => $this->stock_cantidad,
+        'unidad'       => $this->stock_unidad,
+        'id_categoria' => $this->id_categoria,
+        'ubicacion'    => $this->ubicacion,
+        'precio'       => $this->precio_cantidad * $this->precio_unidad,
+        'id_proveedor' => $this->id_proveedor,
+        'estado'       => $this->estado
+    ]);
+    
+    $this->cerrarModal();
+    $this->dispatch('producto-actualizado');
+    $this->dispatch('swal', [
+        'icon'  => 'success',
+        'title' => '¡Producto actualizado!',
+        'text'  => 'Los datos fueron guardados correctamente.',
+    ]);
+}
+
 
     public function mount()
     {

@@ -3,6 +3,8 @@
 
 <head>
     @include('partials.head')
+   
+
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
@@ -27,8 +29,8 @@
         <flux:navlist.item icon="check-circle" href="{{ route('servicios.historial') }}">
             {{ __('Sevicios Completados') }}
         </flux:navlist.item>
-        <flux:navlist.item icon="user" href="{{ route('users.create') }}">
-            {{ __('Users') }}
+        <flux:navlist.item icon="users" href="{{ route('users.index') }}">
+            {{ __('Usuarios') }}
         </flux:navlist.item>
         <flux:spacer />
 
@@ -141,8 +143,8 @@
     </flux:header>
 
     {{ $slot }}
-
-    @fluxScripts
+    @fluxScripts  
+    
 </body>
 
 </html>

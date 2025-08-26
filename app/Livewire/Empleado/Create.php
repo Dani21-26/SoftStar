@@ -13,9 +13,12 @@ class Create extends Component
     public $telefono = '';
     public $correo = '';
     public $estado = 'activo';
+    public bool $showModal = false; 
+    public $perPage = 4;
+
 
     protected $rules = [
-        'nombre' => 'required|string|max:255',
+        'nombre' => 'required|string|max:255|unique:empleados,nombre', 
         'cargo' => 'required|string|max:255',
         'ubicacion' => 'required|string|max:255',
         'telefono' => 'required|string|max:20',
@@ -24,6 +27,7 @@ class Create extends Component
     ];
 
     protected $messages = [
+        'nombre.unique' => 'Este empleado ya está registrado.',
         'correo.unique' => 'Este correo electrónico ya está registrado',
         'correo.email' => 'Debe ingresar un correo electrónico válido',
         'required' => 'Este campo es obligatorio',
@@ -55,14 +59,27 @@ class Create extends Component
             // Debug: Verificar empleado creado
             logger()->info('Empleado creado:', $empleado->toArray());
 
-            $this->reset();
-            session()->flash('success', 'Empleado creado correctamente');
-            $this->redirect(route('empleado.index'));
+            
+            $this->dispatch('swal', [
+                'icon' => 'success',
+                'title' => '¡Creado!',
+                'text' => 'Empleado creado correctamente',
+                'confirmButtonText' => 'OK',
+                'redirect' => route('empleado.index'),
+            ]); 
 
+            $this->reset();
+            
         } catch (\Exception $e) {
             logger()->error('Error al guardar empleado:', ['error' => $e->getMessage()]);
-            session()->flash('error', 'Error al guardar: '.$e->getMessage());
             
+            $this->dispatch('swal', [
+                'icon' => 'error',
+                'title' => 'Error',
+                'text' => 'Error al guardar: ' . $e->getMessage(),
+                'confirmButtonText' => 'OK',
+            ]);
+        
             if (app()->environment('local')) {
                 dd($e->getMessage(), $e->getTrace());
             }

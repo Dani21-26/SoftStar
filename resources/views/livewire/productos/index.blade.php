@@ -11,12 +11,12 @@
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <!-- Barra de búsqueda y filtros -->
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700  dark:text-white tracking-tight">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <!-- Búsqueda -->
                 <div class="w-full md:w-1/3">
                     <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar productos..."
-                        class="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                        class="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600  dark:text-white tracking-tight">
                 </div>
 
                 <!-- Filtros -->
@@ -59,7 +59,7 @@
 
         <!-- Tabla de productos -->
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700  dark:text-white tracking-tight">
                 <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
 

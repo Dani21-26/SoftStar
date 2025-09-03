@@ -3,49 +3,67 @@
 
 <head>
     @include('partials.head')
-   
+
+
 
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky stashable class="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+<body
+    class="min-h-screen border-zinc-400 bg-gradient-to-b from-blue-100 to-white text-black dark:border-zinc-500 dark:from-zinc-900 dark:to-zinc-800 ">
+
+    <flux:sidebar sticky stashable
+        class="border-r border-zinc-400 bg-gradient-to-b from-white to-blue-100 dark:border-zinc-500 dark:from-zinc-900 dark:to-zinc-800 ">
+
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-        <a href="{{ route('dashboard') }}" class="mr-5 flex items-center space-x-2" wire:navigate>
-            
+        <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 p-4">
+            <img src="{{ asset('imagenes/logo.png') }}" class="h-10 w-auto rounded-lg" alt="Logo">
+            <span class="text-lg font-bold text-black dark:text-white">SoftStar</span>
         </a>
 
+
         <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Platform')" class="grid">
+            <flux:navlist.group :heading="__('Menu')" class="grid">
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}
                 </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
-        <flux:navlist.item icon="eye" href="{{ route('servicios.agenda') }}">
+        <flux:navlist.item icon="eye" href="{{ route('servicios.agenda') }}" wire:navigate
+            class="{{ request()->routeIs('servicios.agenda') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
             {{ __('Agenda') }}
         </flux:navlist.item>
-        <flux:navlist.item icon="check-circle" href="{{ route('servicios.historial') }}">
+
+
+        <flux:navlist.item icon="check-circle" href="{{ route('servicios.historial') }}" wire:navigate
+            class="{{ request()->routeIs('servicios.historial') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
             {{ __('Sevicios Completados') }}
         </flux:navlist.item>
-        <flux:navlist.item icon="users" href="{{ route('users.index') }}">
+
+        <flux:navlist.item icon="users" href="{{ route('users.index') }}" wire:navigate
+            class="{{ request()->routeIs('users.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
             {{ __('Usuarios') }}
         </flux:navlist.item>
+
         <flux:spacer />
 
         <flux:spacer />
+
         <flux:navlist variant="outline">
-            <flux:navlist.item icon="rectangle-group" href="{{ route('productos.index') }}">
+            <flux:navlist.item icon="rectangle-group" href="{{ route('productos.index') }}" wire:navigate
+                class="{{ request()->routeIs('productos.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
                 {{ __('Herramientas') }}
             </flux:navlist.item>
 
-            <flux:navlist.item icon="user" href="{{ route('proveedores.index') }}">
+            <flux:navlist.item icon="user" href="{{ route('proveedores.index') }}" wire:navigate
+                class="{{ request()->routeIs('proveedores.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
                 {{ __('Proveedores') }}
             </flux:navlist.item>
 
             @can('ver empleado')
-                <flux:navlist.item icon="users" href="{{ route('empleado.index') }}">
+                <flux:navlist.item icon="users" href="{{ route('empleado.index') }}" wire:navigate
+                    class="{{ request()->routeIs('empleado.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-700' : '' }}">
                     {{ __('Personal') }}
                 </flux:navlist.item>
             @endcan
@@ -143,8 +161,8 @@
     </flux:header>
 
     {{ $slot }}
-    @fluxScripts  
-    
+    @fluxScripts
+
 </body>
 
 </html>

@@ -17,7 +17,7 @@
     </div>
 
     <!-- Panel de búsqueda y filtros -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6  dark:text-white tracking-tight" >
         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <!-- Búsqueda -->
@@ -60,7 +60,7 @@
 
         <!-- Tabla de proveedores -->
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700  dark:text-white tracking-tight">
                 <thead class="bg-blue-500 dark:bg-blue-700">
                     <tr>
 

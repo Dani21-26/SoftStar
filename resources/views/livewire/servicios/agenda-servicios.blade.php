@@ -32,7 +32,7 @@
         <div class="w-full lg:w-auto flex justify-start lg:justify-end">
             <flux:modal.trigger name="crear-servicio">
                 <flux:button
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition">
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md transition">
                     + Agregar Servicio
                 </flux:button>
             </flux:modal.trigger>

@@ -21,8 +21,8 @@
     </div>
 
     <!-- Panel de búsqueda y filtros -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6">
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-6  dark:text-white tracking-tight">
+        <div class="p-4 border-b border-gray-200 dark:border-blue-700">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <!-- Búsqueda -->
                 <div class="w-full md:w-1/3">
@@ -65,7 +65,7 @@
         @can('ver empleado')
             <!-- Tabla de empleados -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700  dark:text-white tracking-tight">
                     <thead class="bg-blue-500 dark:bg-blue-700">
                         <tr>
                             <th scope="col"

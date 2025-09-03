@@ -2,27 +2,27 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Usuarios</h2>
         <a href="{{ route('users.create') }}"
-            class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow transition-colors duration-200">
+            class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition-colors duration-200">
             + Nuevo Usuario
         </a>
     </div>
 
     <div class="mb-4">
         <input type="text" wire:model.live.debounce.300ms="search" placeholder="Buscar por nombre o email..."
-            class="w-full sm:w-1/2 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-green-500 focus:outline-none transition">
+            class="w-full sm:w-1/2 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
     </div>
 
     <div class="overflow-x-auto rounded-lg shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-100 dark:bg-gray-900">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">
+        <table class=" text-bla min-w-full divide-y divide-gray-200 text-black dark:text-white tracking-tight">
+            <thead class="bg-blue-400 dark:bg-blue-700">
+                <tr> 
+                    <th class="px-4 py-3 text-left text-xs font-semibold  text-black dark:text-white uppercase">
                         Nombre</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">
+                    <th class="px-4 py-3 text-left text-xs font-semibold  text-black dark:text-white uppercase">
                         Email</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">
+                    <th class="px-4 py-3 text-left text-xs font-semibold  text-black dark:text-white uppercase">
                         Roles</th>
-                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">
+                    <th class="px-4 py-3 text-center text-xs font-semibold text-black dark:text-white uppercase">
                         Acciones</th>
                 </tr>
             </thead>
@@ -36,13 +36,13 @@
                         </td>
                         <td class="px-4 py-3 text-center">
                             <a href="{{ route('users.edit', $user->id) }}"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs shadow transition-colors">Editar</a>
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs shadow transition-colors">Editar</a>
                             
                             
                                 @if ($user->estado == 'activo')
                                 <button wire:click="toggleStatus({{ $user->id }})"
                                     class="px-3 py-1 rounded-lg text-xs shadow ml-2 transition-colors
-           {{ $user->estado === 'activo' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' }}">
+            {{ $user->estado === 'activo' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' }}">
                                     {{ $user->estado === 'activo' ? 'Desactivar' : 'Activar' }}
                                 </button>
                             @endif

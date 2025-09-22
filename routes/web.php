@@ -9,7 +9,6 @@ use App\Livewire\Productos\Edit;
 use App\Livewire\Productos\Show;
 use App\Livewire\Proveedores\{Index as ProveedoresIndex, Create as ProveedoresCreate, Edit as ProveedoresEdit, Show as ProveedoresShow};
 use App\Livewire\Empleado\{Index as EmpleadoIndex, Create as EmpleadoCreate, Edit as EmpleadoEdit, Show as EmpleadoShow};
-use App\Livewire\Servicios\GestionServicios;
 use App\Livewire\Servicios\AgendaServicios;
 use App\Livewire\Servicios\CrearServicio;
 use App\Livewire\Servicios\EditarServicio;
@@ -73,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['auth', 'verified', 'role:Super-Admin|tecnico|servicio-cliente'])->group(function () {
         Route::prefix('servicios')->group(function () {
             // Servicios actuales (Livewire)
-            Route::get('/gestion', GestionServicios::class)->name('servicios.gestion');
+            
             Route::get('/', AgendaServicios::class)->name('servicios.agenda');  
             Route::get('/crear', CrearServicio::class)->name('servicios.crear');
             Route::get('/servicios/{servicioId}/editar', EditarServicio::class)->name('servicios.editar');

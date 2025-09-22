@@ -46,7 +46,8 @@
     <!-- Tabla -->
     <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
         <table class="min-w-[900px] w-full text-sm text-left">
-            <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase text-xs font-semibold tracking-wide">
+            <thead
+                class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 uppercase text-xs font-semibold tracking-wide">
                 <tr>
                     <th class="px-4 py-3">Cliente</th>
                     <th class="px-4 py-3">Router</th>
@@ -63,16 +64,20 @@
 
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse ($servicios as $servicio)
-                    <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
-                        <td class="px-4 py-3 align-top font-medium text-gray-900 dark:text-white">{{ $servicio->cliente }}</td>
+                    <tr
+                        class="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900 hover:bg-blue-50 dark:hover:bg-gray-700 transition">
+                        <td class="px-4 py-3 align-top font-medium text-gray-900 dark:text-white">
+                            {{ $servicio->cliente }}</td>
                         <td class="px-4 py-3 align-top text-gray-700 dark:text-gray-300">{{ $servicio->router }}</td>
                         <td class="px-4 py-3 align-top text-gray-700 dark:text-gray-300">{{ $servicio->litebean }}</td>
-                        <td class="px-4 py-3 align-top text-gray-700 dark:text-gray-300">{{ $servicio->falla_reportada }}</td>
+                        <td class="px-4 py-3 align-top text-gray-700 dark:text-gray-300">
+                            {{ $servicio->falla_reportada }}</td>
 
                         <!-- Prioridad con badge -->
                         <td class="px-4 py-3 align-top capitalize">
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold 
-                                @if($servicio->prioridad === 'alta') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
+                            <span
+                                class="px-2 py-1 rounded-full text-xs font-semibold 
+                                @if ($servicio->prioridad === 'alta') bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400
                                 @elseif($servicio->prioridad === 'media') bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400
                                 @else bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 @endif">
                                 {{ $servicio->prioridad }}
@@ -94,8 +99,9 @@
 
                         <!-- Estado con badge -->
                         <td class="px-4 py-3 align-top capitalize">
-                            <span class="px-2 py-1 rounded-full text-xs font-semibold 
-                                @if($servicio->estado === 'pendiente') bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                            <span
+                                class="px-2 py-1 rounded-full text-xs font-semibold 
+                                @if ($servicio->estado === 'pendiente') bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300
                                 @elseif($servicio->estado === 'en proceso') bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400
                                 @else bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 @endif">
                                 {{ $servicio->estado }}
@@ -111,15 +117,16 @@
                             <div class="flex items-center space-x-2">
                                 <a href="{{ route('servicios.editar', $servicio->id) }}"
                                     class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm"
-                                    @if($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
+                                    @if ($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
                                     Editar
                                 </a>
-                                <button wire:click="eliminar({{ $servicio->id }})"
-                                    onclick="return confirm('¿Estás seguro de eliminar este servicio?')"
+                                <button
+                                    onclick="if (confirm('¿Estás seguro de eliminar este servicio?')) { @this.call('eliminar', {{ $servicio->id }}) }"
                                     class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm"
-                                    @if($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
+                                    @if ($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
                                     Eliminar
                                 </button>
+
 
                                 @if ($servicio->estado === 'pendiente')
                                     <flux:modal.trigger name="confirmar-servicio"
@@ -153,11 +160,15 @@
 <script>
     document.addEventListener('livewire:init', () => {
         Livewire.on('open-modal', data => {
-            window.dispatchEvent(new CustomEvent('open-modal', { detail: data }));
+            window.dispatchEvent(new CustomEvent('open-modal', {
+                detail: data
+            }));
         });
 
         Livewire.on('close-modal', data => {
-            window.dispatchEvent(new CustomEvent('close-modal', { detail: data }));
+            window.dispatchEvent(new CustomEvent('close-modal', {
+                detail: data
+            }));
         });
     });
 </script>

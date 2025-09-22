@@ -16,6 +16,7 @@ class HistorialServicios extends Component
     public $fechaInicio = '';
     public $fechaFin = '';
 
+
     public function mount()
     {
         $this->fechaInicio = now()->subMonth()->format('Y-m-d');
@@ -42,7 +43,7 @@ class HistorialServicios extends Component
             })
             ->orderBy('created_at', 'desc');
 
-        $detalles = $query->paginate(10);
+        $detalles = $query->paginate(6);
 
         // Estadísticas
         $totalCompletados = DetalleServicio::whereHas('servicio', fn ($q) => $q->where('estado', 'confirmado'))->count();

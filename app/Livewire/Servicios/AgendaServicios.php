@@ -25,7 +25,7 @@ class AgendaServicios extends Component
         $this->dispatch('set-show-modal', value: true);
     }
     
-
+// revisar
     public function eliminar($id)
     {
         ServicioTecnico::findOrFail($id)->delete();

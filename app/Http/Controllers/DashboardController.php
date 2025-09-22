@@ -17,17 +17,6 @@ class DashboardController extends Controller
             now()->endOfWeek()
         ])->count();
 
-        // 2. Servicios pendientes con más de 5 días (excluyendo cancelados)
-        $serviciosAtrasados = ServicioTecnico::whereIn('estado', ['pendiente']) 
-        ->where('created_at', '<', now()->subDays(5))
-        ->select('id', 'cliente', 'estado', 'created_at')
-        ->orderBy('created_at', 'asc')
-        ->get()
-        ->map(function ($servicio) {
-            $servicio->dias_atraso = Carbon::now()->diffInDays($servicio->created_at);
-            return $servicio;
-        });
-
         // 3. Productos utilizados esta semana con nombres
         $productosUtilizados = DetalleServicio::whereBetween('created_at', [
             now()->startOfWeek(), 
@@ -88,7 +77,6 @@ class DashboardController extends Controller
         }
         return view('dashboard', compact(
             'serviciosSemana',
-            'serviciosAtrasados',
             'productosUtilizados',
             'diasSemana',
             'serviciosPorDia',

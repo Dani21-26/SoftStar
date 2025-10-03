@@ -40,7 +40,10 @@
     </div>
 
     <!-- Modales -->
-    <livewire:servicios.crear-servicio />
+    @unlessrole('tecnico')
+        <livewire:servicios.crear-servicio />
+    @endunlessrole
+
     <livewire:servicios.confirmar-servicio />
 
     <!-- Tabla -->
@@ -115,14 +118,19 @@
                         <!-- Acciones -->
                         <td class="px-4 py-3 align-top">
                             <div class="flex items-center space-x-2">
+                                {{-- Botón Editar --}}
                                 <a href="{{ route('servicios.editar', $servicio->id) }}"
-                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm
+              @role('tecnico') opacity-50 pointer-events-none @endrole"
                                     @if ($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
                                     Editar
                                 </a>
+
+                                {{-- Botón Eliminar --}}
                                 <button
                                     onclick="if (confirm('¿Estás seguro de eliminar este servicio?')) { @this.call('eliminar', {{ $servicio->id }}) }"
-                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm"
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm
+               @role('tecnico') opacity-50 pointer-events-none @endrole"
                                     @if ($servicio->estado !== 'pendiente') disabled style="opacity:0.5;pointer-events:none;" @endif>
                                     Eliminar
                                 </button>

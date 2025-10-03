@@ -41,34 +41,32 @@
             {{ __('Sevicios Completados') }}
         </flux:navlist.item>
 
-        <flux:navlist.item icon="users" href="{{ route('users.index') }}" wire:navigate
+        
+
+        <flux:spacer />
+
+        <flux:spacer />
+
+        @unless (auth()->user()->hasRole('tecnico'))
+          <flux:navlist.item icon="users" href="{{ route('users.index') }}" wire:navigate
             class="{{ request()->routeIs('users.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
             {{ __('Usuarios') }}
         </flux:navlist.item>
 
-        <flux:spacer />
-
-        <flux:spacer />
-
-        <flux:navlist variant="outline">
-            <flux:navlist.item icon="rectangle-group" href="{{ route('productos.index') }}" wire:navigate
-                class="{{ request()->routeIs('productos.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
+            <flux:navlist.item icon="rectangle-group" href="{{ route('productos.index') }}" wire:navigate>
                 {{ __('Herramientas') }}
             </flux:navlist.item>
 
-            <flux:navlist.item icon="user" href="{{ route('proveedores.index') }}" wire:navigate
-                class="{{ request()->routeIs('proveedores.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-800' : '' }}">
+            <flux:navlist.item icon="user" href="{{ route('proveedores.index') }}" wire:navigate>
                 {{ __('Proveedores') }}
             </flux:navlist.item>
 
             @can('ver empleado')
-                <flux:navlist.item icon="users" href="{{ route('empleado.index') }}" wire:navigate
-                    class="{{ request()->routeIs('empleado.index') ? 'bg-white font-semibold rounded-lg dark:bg-zinc-700' : '' }}">
+                <flux:navlist.item icon="users" href="{{ route('empleado.index') }}" wire:navigate>
                     {{ __('Personal') }}
                 </flux:navlist.item>
             @endcan
-
-        </flux:navlist>
+        @endunless
 
         <!-- Desktop User Menu -->
         <flux:dropdown position="bottom" align="start">

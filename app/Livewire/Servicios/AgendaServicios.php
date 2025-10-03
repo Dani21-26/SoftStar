@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Servicios;
+use Illuminate\Support\Facades\Auth;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -49,9 +50,16 @@ class AgendaServicios extends Component
     
     public function render()
 {
+    $user = Auth::user();
+
     $query = ServicioTecnico::with('tecnico')
-        ->where('estado', 'pendiente') // Solo mostrar servicios por confirmar
+        ->where('estado', 'pendiente')
         ->orderBy('created_at', 'desc');
+
+    // Si el usuario NO es Super-Admin → solo ve sus propios servicios
+    if (!$user->hasRole('Super-Admin')) {
+        $query->where('tecnico_id', $user->id);
+    }
 
     if (!empty($this->fechaFiltrada)) {
         $query->whereDate('created_at', $this->fechaFiltrada);
@@ -67,7 +75,7 @@ class AgendaServicios extends Component
         });
     }
 
-    $servicios = $query->paginate(5);
+    $servicios = $query->paginate($this->perPage);
 
     return view('livewire.servicios.agenda-servicios', compact('servicios'));
 }
